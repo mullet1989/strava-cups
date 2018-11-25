@@ -1,16 +1,31 @@
 import { Injectable, MiddlewareFunction, NestMiddleware } from '@nestjs/common';
+import { AthleteService } from '../athlete/athlete.service';
 
 @Injectable()
 export class TrackingMiddleware implements NestMiddleware {
 
-  resolve(...args: any[]): MiddlewareFunction | Promise<MiddlewareFunction> {
-    return ((req, res, next) => {
+  constructor(private readonly _athlete: AthleteService) {
+
+  }
+
+  async resolve(): Promise<MiddlewareFunction> {
+    return (async (req, res, next) => {
       let anon = req.cookies.a;
       if (!anon) {
-        res.cookie('a', this.guid(), { maxAge: 900000, httpOnly: true });
+        let someDate = new Date();
+        let numberOfDaysToAdd = 365;
+        someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
+        res.cookie('a', this.guid(), { expires: someDate, httpOnly: true });
       } else {
         // nothing to do!
       }
+
+      let athlete = await this._athlete.getOne(687997);
+      if (athlete) {
+        console.log(athlete.first_name);
+      }
+      req.athlete = athlete;
+
       next();
     });
   }

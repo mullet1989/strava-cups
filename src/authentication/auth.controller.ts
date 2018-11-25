@@ -1,11 +1,11 @@
 import { Controller, Get, HttpService, Inject, Query, Render, Res } from '@nestjs/common';
 import { StravaService } from '../strava/strava.service';
-import { catchError, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { StravaBody } from '../strava/strava.models';
 import { STRAVA_SERVICE_TOKEN } from '../strava.constants';
 import { AthleteService } from '../athlete/athlete.service';
 import { Athlete } from '../entity/user.entity';
-import { ServerResponse } from 'http';
+import { AthleteAccessToken } from '../entity/user.accesstoken.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -22,8 +22,7 @@ export class AuthController {
   }
 
   @Get('exchange')
-  @Render('success')
-  async exchange(@Query() query) {
+  async exchange(@Query() query, @Res() res) {
     let code = query.code;
     // todo : exchange token
     let redirect = this.stravaService.exchange_url;
@@ -37,21 +36,35 @@ export class AuthController {
     // try insert to the database
     try {
       let athlete = response.athlete;
-      let ath = new Athlete();
+
+      let ath = await this.athleteService.getOne(athlete.id) || new Athlete();
+      // athlete
       ath.athlete_id = athlete.id;
       ath.first_name = athlete.firstname;
       ath.last_name = athlete.lastname;
-      ath.access_token = response.access_token;
+
+      // create if not exist
+      if (!ath.access_tokens || !ath.access_tokens.length) {
+        ath.access_tokens = [];
+      }
+
+      let access_token = new AthleteAccessToken();
+      access_token.access_token = code;
+      access_token.athlete = ath;
+      ath.access_tokens.push(access_token);
+
       await this.athleteService.insert(ath);
+
+      res.render('success', {
+        firstname: response.athlete.firstname,
+        lastname: response.athlete.lastname,
+      });
+
     } catch (e) {
       console.log(e);
+      res.code(500);
     }
 
-
-    return {
-      firstname: response.athlete.firstname,
-      lastname: response.athlete.lastname,
-    };
   }
 
 }

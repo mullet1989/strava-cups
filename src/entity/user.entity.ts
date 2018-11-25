@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Unique } from 'typeorm';
+import { AthleteAccessToken } from './user.accesstoken.entity';
 
 @Entity('athlete')
 export class Athlete {
@@ -12,13 +13,15 @@ export class Athlete {
   @Column()
   last_name: string;
 
-  @Column()
-  access_token: string;
-
-  @Column()
+  @Column({
+    unique: true,
+  })
   athlete_id: number;
 
-  @Column({ default: () => "now()"})
+  @OneToMany(type => AthleteAccessToken, token => token.athlete, { eager: true, cascade: true })
+  access_tokens: AthleteAccessToken[];
+
+  @Column({ default: () => 'now()' })
   create_datetime: Date;
 
 }

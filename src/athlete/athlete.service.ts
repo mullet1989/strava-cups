@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Athlete } from '../entity/user.entity';
-import { InsertResult, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AthleteService {
@@ -16,8 +16,12 @@ export class AthleteService {
     return this.athleteRepository.find();
   }
 
-  insert(athlete: Athlete): Promise<InsertResult> {
-    return this.athleteRepository.insert(athlete);
+  getOne(id: number): Promise<Athlete> {
+    return this.athleteRepository.findOne({ athlete_id: id });
+  }
+
+  insert(athlete: Athlete): Promise<Athlete> {
+    return this.athleteRepository.save(athlete);
   }
 
 }
