@@ -1,14 +1,18 @@
 import { Controller, Get, HttpService, Inject, Query, Render, Res } from '@nestjs/common';
 import { StravaService } from '../strava/strava.service';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { StravaBody } from '../strava/strava.models';
 import { STRAVA_SERVICE_TOKEN } from '../strava.constants';
+import { AthleteService } from '../athlete/athlete.service';
+import { Athlete } from '../entity/user.entity';
+import { ServerResponse } from 'http';
 
 @Controller('auth')
 export class AuthController {
 
   constructor(
     @Inject(STRAVA_SERVICE_TOKEN) private readonly stravaService: StravaService,
+    private readonly athleteService: AthleteService,
     private readonly http: HttpService) {
   }
 
@@ -29,6 +33,20 @@ export class AuthController {
       .pipe(
         map(res => res.data),
       ).toPromise();
+
+    // try insert to the database
+    try {
+      let athlete = response.athlete;
+      let ath = new Athlete();
+      ath.athlete_id = athlete.id;
+      ath.first_name = athlete.firstname;
+      ath.last_name = athlete.lastname;
+      ath.access_token = response.access_token;
+      await this.athleteService.insert(ath);
+    } catch (e) {
+      console.log(e);
+    }
+
 
     return {
       firstname: response.athlete.firstname,

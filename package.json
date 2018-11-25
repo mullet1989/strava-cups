@@ -30,7 +30,8 @@
       "dotenv": "^6.1.0",
       "typeorm": "0.2.9",
       "pg": "^7.6.1",
-      "@nestjs/typeorm": "^5.2.2"
+      "@nestjs/typeorm": "^5.2.2",
+      "cookie-parser": "^1.4.3"
    },
    "devDependencies": {
       "@nestjs/testing": "^5.1.0",

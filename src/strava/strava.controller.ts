@@ -8,8 +8,8 @@ export class StravaController {
     console.log('here is the strava controller');
   }
 
-  @Get("segments")
+  @Get('segments')
   segments(): any {
-
+    return 'heasodasid';
   }
 }

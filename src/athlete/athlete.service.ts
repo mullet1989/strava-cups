@@ -1,19 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../entity/user.entity';
-import { Repository } from 'typeorm';
+import { Athlete } from '../entity/user.entity';
+import { InsertResult, Repository } from 'typeorm';
 
 @Injectable()
 export class AthleteService {
   constructor(
-    @InjectRepository(User)
-    private readonly _user: Repository<User>,
+    @InjectRepository(Athlete)
+    private readonly athleteRepository: Repository<Athlete>,
   ) {
 
   }
 
-  getAll(): Promise<User[]> {
-    return this._user.find();
+  getAll(): Promise<Athlete[]> {
+    return this.athleteRepository.find();
+  }
+
+  insert(athlete: Athlete): Promise<InsertResult> {
+    return this.athleteRepository.insert(athlete);
   }
 
 }

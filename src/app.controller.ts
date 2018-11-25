@@ -1,6 +1,6 @@
-import { Get, Controller, Render } from '@nestjs/common';
+import { Get, Controller, Render, Req, Res } from '@nestjs/common';
 import { AthleteService } from './athlete/athlete.service';
-import { User } from './entity/user.entity';
+import { Athlete } from './entity/user.entity';
 
 
 @Controller()
@@ -12,13 +12,14 @@ export class AppController {
 
   @Get()
   @Render('index')
-  auth(): any {
+  index(@Req() req, @Res() res): any {
+
     return { message: 'Get started with Strava' };
   }
 
 
   @Get('home')
-  async home(): Promise<User[]> {
+  async home(): Promise<Athlete[]> {
     let athletes = await this._athlete.getAll();
     return athletes;
   }

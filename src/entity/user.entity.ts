@@ -1,16 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('user')
-export class User {
+@Entity('athlete')
+export class Athlete {
 
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  firstname: string;
+  first_name: string;
 
   @Column()
-  lastname: string;
+  last_name: string;
 
   @Column()
   access_token: string;
@@ -18,7 +18,7 @@ export class User {
   @Column()
   athlete_id: number;
 
-  @Column()
+  @Column({ default: () => "now()"})
   create_datetime: Date;
 
 }
