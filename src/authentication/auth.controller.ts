@@ -1,4 +1,4 @@
-import { Controller, Get, HttpService, Inject, Query, Render, Res } from '@nestjs/common';
+import { Controller, Get, HttpService, Inject, Query, Render, Req, Res } from '@nestjs/common';
 import { StravaService } from '../strava/strava.service';
 import { map } from 'rxjs/operators';
 import { StravaBody } from '../strava/strava.models';
@@ -6,23 +6,24 @@ import { STRAVA_SERVICE_TOKEN } from '../strava.constants';
 import { AthleteService } from '../athlete/athlete.service';
 import { Athlete } from '../entity/user.entity';
 import { AthleteAccessToken } from '../entity/user.accesstoken.entity';
+import { AuthService } from './auth.service';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
 
-  constructor(
-    @Inject(STRAVA_SERVICE_TOKEN) private readonly stravaService: StravaService,
-    private readonly athleteService: AthleteService,
-    private readonly http: HttpService) {
+  constructor(@Inject(STRAVA_SERVICE_TOKEN) private readonly stravaService: StravaService,
+              private readonly athleteService: AthleteService,
+              private readonly http: HttpService,
+              private readonly _auth: AuthService) {
   }
 
-  @Get('connect')
-  root(@Res() res): any {
+  @Get("connect")
+  connect(@Res() res): any {
     return res.redirect(this.stravaService.loginUrl);
   }
 
-  @Get('exchange')
-  async exchange(@Query() query, @Res() res) {
+  @Get("exchange")
+  async exchange(@Query() query, @Req() req, @Res() res) {
     let code = query.code;
     // todo : exchange token
     let redirect = this.stravaService.exchange_url;
@@ -54,6 +55,10 @@ export class AuthController {
       ath.access_tokens.push(access_token);
 
       await this.athleteService.insert(ath);
+
+      // make session
+      let anon = req.anon;
+      this._auth.addAthlete(anon, ath);
 
       res.render('success', {
         firstname: response.athlete.firstname,

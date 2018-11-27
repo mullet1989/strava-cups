@@ -18,7 +18,7 @@ export class AppController {
   }
 
 
-  @Get('home')
+  @Get()
   async home(): Promise<Athlete[]> {
     let athletes = await this._athlete.getAll();
     return athletes;

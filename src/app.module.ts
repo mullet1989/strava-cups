@@ -9,9 +9,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './typeorm.config.service';
 import { AthleteModule } from './athlete/athlete.module';
 import { TrackingMiddleware } from './authentication/tracking.middleware';
+import { RouterModule } from 'nest-router';
+import { routes } from './routes';
 
 @Module({
   imports: [
+    RouterModule.forRoutes(routes),
     StravaModule,
     HttpModule,
     AuthModule,
@@ -26,7 +29,7 @@ import { TrackingMiddleware } from './authentication/tracking.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {
-    consumer.apply(StravaAuthMiddleware).forRoutes('strava');
     consumer.apply(TrackingMiddleware).forRoutes('*');
+    consumer.apply(StravaAuthMiddleware).forRoutes('strava');
   }
 }

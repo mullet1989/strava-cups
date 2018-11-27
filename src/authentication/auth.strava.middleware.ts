@@ -14,11 +14,17 @@ export class StravaAuthMiddleware implements NestMiddleware {
    * this is not doing anything right now
    * @param args
    */
-  async resolve(...args: any[]): Promise<MiddlewareFunction> {
+  async resolve(): Promise<MiddlewareFunction> {
     return ((req, res, next) => {
 
-      this._athlete.getAll()
-
+      if (req.athlete) {
+        // we are good
+        console.log("has athlete")
+        next();
+      } else {
+        res.code(401);
+        return;
+      }
 
     });
   }
