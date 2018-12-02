@@ -1,18 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AthleteService } from './athlete.service';
-import { ConfigModule } from '../config/config.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Athlete } from '../entity/user.entity';
+import { Athlete } from '../entity/athlete.entity';
 import { AthleteController } from './athlete.controller';
-
+import { Activity } from '../entity/activity.entity';
 
 @Module({
   imports: [
-    ConfigModule,
-    TypeOrmModule.forFeature([Athlete]),
+    TypeOrmModule.forFeature(
+      [
+        Athlete,
+        Activity
+      ]),
   ],
   providers: [
-    AthleteService,
+    AthleteService
   ],
   controllers: [AthleteController],
   exports: [AthleteService],

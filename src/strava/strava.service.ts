@@ -19,7 +19,6 @@ export class StravaService {
     private readonly _id: number,
     private readonly _secret: string,
     private readonly _httpClient: HttpService) {
-
   }
 
   get loginUrl(): string {

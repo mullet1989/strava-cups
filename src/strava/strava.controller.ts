@@ -5,7 +5,6 @@ import { STRAVA_SERVICE_TOKEN } from '../strava.constants';
 @Controller()
 export class StravaController {
   constructor(@Inject(STRAVA_SERVICE_TOKEN) private readonly _strava: StravaService) {
-    console.log('here is the strava controller');
   }
 
   @Get()

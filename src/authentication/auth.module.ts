@@ -1,17 +1,22 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
-import { AthleteModule } from '../athlete/athlete.module';
 import { AthleteService } from '../athlete/athlete.service';
 import { AuthService } from './auth.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Session } from '../entity/session.entity';
+import { AthleteModule } from '../athlete/athlete.module';
 
 @Module({
-  imports: [AthleteModule],
+  imports: [
+    TypeOrmModule.forFeature([Session]),
+    AthleteModule,
+  ],
   controllers: [AuthController],
   providers: [
-    AthleteService,
     AuthService,
+    AthleteService,
   ],
-  exports: [AuthService]
+  exports: [AuthService],
 })
 export class AuthModule {
 }

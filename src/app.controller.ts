@@ -1,12 +1,13 @@
 import { Get, Controller, Render, Req, Res } from '@nestjs/common';
 import { AthleteService } from './athlete/athlete.service';
-import { Athlete } from './entity/user.entity';
+import { Athlete } from './entity/athlete.entity';
 
 
 @Controller()
 export class AppController {
 
-  constructor(private readonly _athlete: AthleteService) {
+  constructor(
+    private readonly _athlete: AthleteService) {
 
   }
 

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Athlete } from './user.entity';
+import { Athlete } from './athlete.entity';
 
 @Entity('athlete_access_token')
 export class AthleteAccessToken {

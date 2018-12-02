@@ -1,18 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
+import { AthleteService } from './athlete.service';
 
 
 @Controller()
 export class AthleteController {
-  constructor() {
+  constructor(
+    private readonly _athleteService: AthleteService) {
   }
 
-  @Get()
-  async athlete(): Promise<string> {
-    return 'ues';
-  }
-
-  @Get("me")
-  me(): string {
-    return 'me';
+  @Get('activities')
+  async activities(@Req() req) {
+    let athlete = req.athlete;
+    try {
+      let activities = await this._athleteService.getActivitiesAsync(athlete);
+      return activities;
+    } catch (e) {
+      return e.message;
+    }
   }
 }

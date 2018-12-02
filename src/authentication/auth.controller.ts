@@ -4,8 +4,8 @@ import { map } from 'rxjs/operators';
 import { StravaBody } from '../strava/strava.models';
 import { STRAVA_SERVICE_TOKEN } from '../strava.constants';
 import { AthleteService } from '../athlete/athlete.service';
-import { Athlete } from '../entity/user.entity';
-import { AthleteAccessToken } from '../entity/user.accesstoken.entity';
+import { Athlete } from '../entity/athlete.entity';
+import { AthleteAccessToken } from '../entity/athlete.accesstoken.entity';
 import { AuthService } from './auth.service';
 
 @Controller()
@@ -50,15 +50,17 @@ export class AuthController {
       }
 
       let access_token = new AthleteAccessToken();
-      access_token.access_token = code;
+      access_token.access_token = response.access_token;
       access_token.athlete = ath;
       ath.access_tokens.push(access_token);
 
+      console.log(access_token);
+
       await this.athleteService.insert(ath);
 
-      // make session
+      // make sessions
       let anon = req.anon;
-      this._auth.addAthlete(anon, ath);
+      this._auth.newSessionAsync(anon, ath);
 
       res.render('success', {
         firstname: response.athlete.firstname,

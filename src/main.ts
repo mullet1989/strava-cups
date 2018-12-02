@@ -9,8 +9,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('hbs');
-  app.use(cookie("secretstring"));
-
+  app.use(cookie('secretstring'));
 
   await app.listen(3000);
 }

@@ -6,8 +6,7 @@ import { AthleteService } from '../athlete/athlete.service';
 @Injectable()
 export class StravaAuthMiddleware implements NestMiddleware {
 
-  constructor(@Inject(STRAVA_SERVICE_TOKEN) private readonly _strava: StravaService,
-              private readonly _athlete: AthleteService) {
+  constructor(@Inject(STRAVA_SERVICE_TOKEN) private readonly _strava: StravaService) {
   }
 
   /**
@@ -22,7 +21,7 @@ export class StravaAuthMiddleware implements NestMiddleware {
         console.log("has athlete")
         next();
       } else {
-        res.code(401);
+        res.status(401).send();
         return;
       }
 
