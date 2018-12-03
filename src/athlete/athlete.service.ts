@@ -48,7 +48,15 @@ export class AthleteService {
     }
   }
 
-  async getActivitiesAsync(athlete: Athlete, page: number = 1): Promise<Activity[]> {
+  async getLatestDbActivityAsync(athlete: Athlete): Promise<Activity> {
+    return this.activityRepository
+      .createQueryBuilder('activity')
+      .where('activity.athlete_id=:id', { id: athlete.id })
+      .orderBy('activity.start_date', 'DESC')
+      .getOne();
+  }
+
+  async getActivitiesAsync(athlete: Athlete, page: number = 1, date?: Date): Promise<Activity[]> {
     let sortedTokens: AthleteAccessToken[] = athlete.access_tokens
       .sort((a: AthleteAccessToken, b: AthleteAccessToken) => {
         if (a.create_datetime < b.create_datetime) {
@@ -66,10 +74,14 @@ export class AthleteService {
     };
 
     let url = `${this.BaseUrl}/athlete/activities?page=${page}`;
+    if (date) {
+      // add date if it was passed optionally
+      url += `&after=${Math.round(date.getTime() / 1000)}`
+    }
     let activities: any = await this._http.get<Activity[]>(url, config)
       .pipe(
         map(resp => resp.data),
-        catchError(err => throwError("you suck!")),
+        catchError(err => throwError(err)),
         map<any[], Activity[]>((activities: any[]) => {
           let as = new Array<Activity>();
           for (let activity of activities) {

@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { AthleteService } from './athlete/athlete.service';
-import { Activity } from './entity/activity.entity';
 import { Athlete } from './entity/athlete.entity';
+import Timer = NodeJS.Timer;
+import { ConfigService } from './config/config.service';
 
 @Injectable()
 export class AppService {
 
   private _isWorking: boolean = false;
   private _startedWorkingTime: Date = new Date();
+  private _interval: Timer;
 
   get isWorking() {
     return this._isWorking;
@@ -26,29 +28,49 @@ export class AppService {
 
   constructor(
     private readonly athleteService: AthleteService,
+    private readonly configService: ConfigService
   ) {
-    setInterval(() => {
+    let shouldFetch: boolean = this.configService.get("BACKGROUND_COLLECT") === "true";
+    if (!shouldFetch) {
+      return;
+    }
+
+    this._interval = setInterval(() => {
       if (!this.isWorking) {
         this.printAthleteAsync();
         this.isWorking = true;
       } else {
-        console.log("still working on the last one")
+        console.log('still working on the last one');
       }
-    }, 1000 * 30);
+    }, 1000 * 5);
   }
 
   async printAthleteAsync() {
-    let athleteId = 687997;
-    let athlete: Athlete = await this.athleteService.getOne(athleteId);
+
+    let athletes: Athlete[] = await this.athleteService.getAll();
     let complete: boolean = false;
 
-    let page: number = 1;
-    while (!complete && page < 5) {
-      let activities = await this.athleteService.getActivitiesAsync(athlete, page);
-      await this.athleteService.saveActivitiesAsync(activities);
-      page += 1;
+    try {
+      for (let athlete of athletes) {
+        let page: number = 1;
+        let latestActivity = await this.athleteService.getLatestDbActivityAsync(athlete);
+        let lastTime = latestActivity ? latestActivity.start_date : new Date('1970-01-01');
+        while (!complete && page < 5) {
+          let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime);
+          if (activities.length) {
+            await this.athleteService.saveActivitiesAsync(activities);
+            page += 1;
+          } else {
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      clearTimeout(this._interval); // stop working
+      console.log(e.message);
+    } finally {
+      this.isWorking = false;
     }
-    this.isWorking = false;
   }
 
 }

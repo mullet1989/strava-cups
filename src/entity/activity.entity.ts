@@ -21,7 +21,7 @@ export class Activity {
   @Column()
   type: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'timestamp' })
   start_date: Date;
 
   @Column()
