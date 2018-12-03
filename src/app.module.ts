@@ -6,7 +6,7 @@ import { StravaModule } from './strava/strava.module';
 import { StravaAuthMiddleware } from './authentication/auth.strava.middleware';
 import { ConfigModule } from './config/config.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TypeOrmConfigService } from './typeorm.config.service';
+import { TypeormConfigDevelopmentService } from './typeorm.config.development.service';
 import { RouterModule } from 'nest-router';
 import { routes } from './routes';
 import { AthleteModule } from './athlete/athlete.module';
@@ -21,7 +21,7 @@ import { TrackingMiddleware } from './authentication/tracking.middleware';
     HttpModule,
     RouterModule.forRoutes(routes),
     TypeOrmModule.forRootAsync({
-      useClass: TypeOrmConfigService,
+      useClass: TypeormConfigDevelopmentService,
       imports: [ConfigModule],
     })
   ],

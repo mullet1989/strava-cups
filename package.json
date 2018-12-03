@@ -6,6 +6,7 @@
    "license": "MIT",
    "scripts": {
       "build": "tsc",
+      "heroku-postbuild": "tsc --project tsconfig.json",
       "format": "prettier --write \"src/**/*.ts\"",
       "start": "ts-node src/index.ts",
       "start:dev": "nodemon",
