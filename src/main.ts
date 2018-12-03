@@ -11,7 +11,7 @@ async function bootstrap() {
   app.setViewEngine('hbs');
   app.use(cookie('secretstring'));
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 
 bootstrap();
