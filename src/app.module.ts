@@ -11,6 +11,8 @@ import { RouterModule } from 'nest-router';
 import { routes } from './routes';
 import { AthleteModule } from './athlete/athlete.module';
 import { TrackingMiddleware } from './authentication/tracking.middleware';
+import { ConfigService } from './config/config.service';
+import { TypeormConfigProductionServiceService } from './typeorm.config.production.service';
 
 @Module({
   imports: [
@@ -21,7 +23,15 @@ import { TrackingMiddleware } from './authentication/tracking.middleware';
     HttpModule,
     RouterModule.forRoutes(routes),
     TypeOrmModule.forRootAsync({
-      useClass: TypeormConfigDevelopmentService,
+      useFactory: (config: ConfigService) => {
+        let env = process.env.NODE_ENV;
+        if (env === "development") {
+          return new TypeormConfigDevelopmentService(config).createTypeOrmOptions();
+        } else {
+          return new TypeormConfigProductionServiceService(config).createTypeOrmOptions();
+        }
+      },
+      inject: [ConfigService],
       imports: [ConfigModule],
     })
   ],
