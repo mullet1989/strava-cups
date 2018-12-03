@@ -12,6 +12,7 @@ export class TypeormConfigProductionServiceService implements TypeOrmOptionsFact
     return {
       type: 'postgres',
       url: this.configService.get('DATABASE_URL'),
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true, // will create on first run
     };
   }
