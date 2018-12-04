@@ -37,17 +37,20 @@ export class AppService {
     }
 
     const msInterval = process.env.NODE_ENV === 'development'
-      ? 1000 * 5 // 5 seconds
+      ? 1000 * 20 // 20 seconds
       : 1000 * 60 * 15; // 15 minutes (strava rate limit)
 
-    this._interval = setInterval(() => {
+    const callback = () => {
       if (!this.isWorking) {
         this.printAthleteAsync();
         this.isWorking = true;
       } else {
         console.log('still working on the last one');
       }
-    }, msInterval);
+    };
+
+    setTimeout(() => callback(), 5000); // invoke immediately
+    this._interval = setInterval(callback, msInterval);
   }
 
   async printAthleteAsync() {
@@ -59,10 +62,7 @@ export class AppService {
       for (let athlete of athletes) {
         let page: number = 1;
         let latestActivities: Activity[] = await this.athleteService.getDbActivitiesAsync(athlete, 1);
-        if (!latestActivities.length) {
-          return;
-        }
-        let lastTime = latestActivities ? latestActivities[0].start_date : new Date('1970-01-01');
+        let lastTime = (latestActivities && latestActivities.length) ? latestActivities[0].start_date : new Date('1970-01-01');
         while (!complete && page < 5) {
           let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime);
           if (activities.length) {
