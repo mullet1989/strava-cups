@@ -1,5 +1,4 @@
 import { Athlete } from '../entity/athlete.entity';
-import { AthleteService } from '../athlete/athlete.service';
 import { Session } from '../entity/session.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';

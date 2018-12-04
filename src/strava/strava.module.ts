@@ -13,7 +13,7 @@ const StravaProviders = [
       let clientID = parseInt(config.get('CLIENT_ID'));
       let clientSecret = config.get('CLIENT_SECRET');
 
-      return new StravaService(clientID, clientSecret, http);
+      return new StravaService(clientID, clientSecret, http, config);
     },
     inject: [HttpService, ConfigService],
   },

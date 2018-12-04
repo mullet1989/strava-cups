@@ -3,6 +3,7 @@ import { AthleteService } from './athlete/athlete.service';
 import { Athlete } from './entity/athlete.entity';
 import Timer = NodeJS.Timer;
 import { ConfigService } from './config/config.service';
+import { Activity } from './entity/activity.entity';
 
 @Injectable()
 export class AppService {
@@ -28,12 +29,16 @@ export class AppService {
 
   constructor(
     private readonly athleteService: AthleteService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
   ) {
-    let shouldFetch: boolean = this.configService.get("BACKGROUND_COLLECT") === "true";
+    let shouldFetch: boolean = this.configService.get('BACKGROUND_COLLECT') === 'true';
     if (!shouldFetch) {
       return;
     }
+
+    const msInterval = process.env.NODE_ENV === 'development'
+      ? 1000 * 5 // 5 seconds
+      : 1000 * 60 * 15; // 15 minutes (strava rate limit)
 
     this._interval = setInterval(() => {
       if (!this.isWorking) {
@@ -42,7 +47,7 @@ export class AppService {
       } else {
         console.log('still working on the last one');
       }
-    }, 1000 * 5);
+    }, msInterval);
   }
 
   async printAthleteAsync() {
@@ -53,8 +58,11 @@ export class AppService {
     try {
       for (let athlete of athletes) {
         let page: number = 1;
-        let latestActivity = await this.athleteService.getLatestDbActivityAsync(athlete);
-        let lastTime = latestActivity ? latestActivity.start_date : new Date('1970-01-01');
+        let latestActivities: Activity[] = await this.athleteService.getDbActivitiesAsync(athlete, 1);
+        if (!latestActivities.length) {
+          return;
+        }
+        let lastTime = latestActivities ? latestActivities[0].start_date : new Date('1970-01-01');
         while (!complete && page < 5) {
           let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime);
           if (activities.length) {

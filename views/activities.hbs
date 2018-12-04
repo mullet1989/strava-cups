@@ -1,0 +1,24 @@
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Distance</th>
+        <th>Kudos</th>
+        <th>Achievement</th>
+        <th>Comment</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each activities}}
+        <tr>
+            <td>{{name}}</td>
+            <td>{{distance}}</td>
+            <td>{{kudos_count}}</td>
+            <td>{{achievement_count}}</td>
+            <td>{{comment_count}}</td>
+            <td>{{start_date}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>

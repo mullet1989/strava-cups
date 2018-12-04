@@ -48,12 +48,13 @@ export class AthleteService {
     }
   }
 
-  async getLatestDbActivityAsync(athlete: Athlete): Promise<Activity> {
+  async getDbActivitiesAsync(athlete: Athlete, number: number = 1): Promise<Activity[]> {
     return this.activityRepository
       .createQueryBuilder('activity')
       .where('activity.athlete_id=:id', { id: athlete.id })
       .orderBy('activity.start_date', 'DESC')
-      .getOne();
+      .limit(number)
+      .getMany();
   }
 
   async getActivitiesAsync(athlete: Athlete, page: number = 1, date?: Date): Promise<Activity[]> {
@@ -76,7 +77,7 @@ export class AthleteService {
     let url = `${this.BaseUrl}/athlete/activities?page=${page}`;
     if (date) {
       // add date if it was passed optionally
-      url += `&after=${Math.round(date.getTime() / 1000)}`
+      url += `&after=${Math.round(date.getTime() / 1000)}`;
     }
     let activities: any = await this._http.get<Activity[]>(url, config)
       .pipe(

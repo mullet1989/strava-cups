@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Render, Req, Res } from '@nestjs/common';
 import { AthleteService } from './athlete.service';
 
 
@@ -9,11 +9,12 @@ export class AthleteController {
   }
 
   @Get('activities')
-  async activities(@Req() req) {
+  @Render('activities')
+  async activities(@Req() req, @Res() res) {
     let athlete = req.athlete;
     try {
-      let activities = await this._athleteService.getActivitiesAsync(athlete);
-      return activities;
+      let activities = await this._athleteService.getDbActivitiesAsync(athlete, 10);
+      return { activities: activities };
     } catch (e) {
       return e.message;
     }
