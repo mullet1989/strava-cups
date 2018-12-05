@@ -9,36 +9,35 @@ export class TrackingMiddleware implements NestMiddleware {
   }
 
   async resolve(): Promise<MiddlewareFunction> {
-    return (async (req, res, next) => {
+    return (async (req, res: any, next) => {
 
       // get anon
       let anon = req.cookies.a;
       if (!anon) {
-        let someDate = new Date();
-        let numberOfDaysToAdd = 365;
-        someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
+        let someDate = this.getExpiration();
         anon = this.guid();
         res.cookie('a', anon, { expires: someDate, httpOnly: true });
-      } else {
-        // nothing to do!
       }
 
-      // we *always* get an anon
       req.anon = anon;
 
       // get matching athlete
       let athlete: Athlete;
-      let athleteObj = await this._lookup.tryGetAthleteAsync(anon);
-      if (athleteObj.exists) {
-        athlete = athleteObj.athlete;
+      let dbAthlete = await this._lookup.getAthleteAsync(anon);
+      if (dbAthlete) {
+        athlete = dbAthlete;
         req.athlete = athlete;
-      } else {
-        // do something
       }
-
 
       next();
     });
+  }
+
+  private getExpiration(): Date {
+    let someDate = new Date();
+    let numberOfDaysToAdd = 365; // 1 year
+    someDate.setDate(someDate.getDate() + numberOfDaysToAdd);
+    return someDate;
   }
 
   private guid(): string {

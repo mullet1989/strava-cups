@@ -14,6 +14,10 @@ export class AthleteController {
     let athlete = req.athlete;
     try {
       let activities = await this._athleteService.getDbActivitiesAsync(athlete, 10);
+      const transformed = activities.map((a) => {
+        a.distance = a.distance / 1000;
+
+      });
       return { activities: activities };
     } catch (e) {
       return e.message;

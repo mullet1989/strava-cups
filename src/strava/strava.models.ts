@@ -1,7 +1,10 @@
 export class StravaBody {
   token_type: string;
   access_token: string;
-  athlete: SummaryAthlete;
+  refresh_token: string;
+  athlete?: SummaryAthlete;
+  state?: string;
+  expires_at: number;
 }
 
 /**

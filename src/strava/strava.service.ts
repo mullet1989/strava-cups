@@ -26,7 +26,8 @@ export class StravaService {
   }
 
   get loginUrl(): string {
-    return `${this.base}?client_id=${this.id}&redirect_uri=${this.redirect_url}&response_type=code`;
+    const scopes = `read_all,activity:read_all`;
+    return `${this.base}?client_id=${this.id}&redirect_uri=${this.redirect_url}&response_type=code&scope=${scopes}`;
   }
 
 }

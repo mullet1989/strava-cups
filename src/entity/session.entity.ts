@@ -4,17 +4,10 @@ import { Athlete } from './athlete.entity';
 @Entity('session')
 export class Session {
 
-  constructor(
-    anon: string,
-    athlete: Athlete) {
-    this.anon = anon;
-    this.athlete = athlete;
-  }
-
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(type => Athlete)
+  @ManyToOne(type => Athlete, { eager: true, cascade: true })
   @JoinColumn({ referencedColumnName: 'athlete_id', name: 'athlete_id' })
   athlete: Athlete;
 
@@ -26,7 +19,7 @@ export class Session {
   create_datetime: Date;
 
   // access_token expires 6 hours after creation
-  @Column({ default: () => 'now() + interval \'6 hours\'' })
+  @Column()
   expires_datetime: Date;
 
 }

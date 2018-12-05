@@ -10,6 +10,9 @@ export class AthleteAccessToken {
   @Column()
   access_token: string;
 
+  @Column()
+  refresh_token: string;
+
   @ManyToOne(type => Athlete)
   @JoinColumn({ referencedColumnName: 'athlete_id', name: 'athlete_id' })
   athlete: Athlete;

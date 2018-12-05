@@ -51,16 +51,16 @@ export class AuthController {
 
       let access_token = new AthleteAccessToken();
       access_token.access_token = response.access_token;
+      access_token.refresh_token = response.refresh_token;
+      access_token.expires_datetime = new Date(response.expires_at);
       access_token.athlete = ath;
       ath.access_tokens.push(access_token);
-
-      console.log(access_token);
 
       await this.athleteService.insert(ath);
 
       // make sessions
       let anon = req.anon;
-      this._auth.newSessionAsync(anon, ath);
+      await this._auth.newSessionAsync(anon, ath, access_token.expires_datetime);
 
       res.render('success', {
         firstname: response.athlete.firstname,
@@ -69,7 +69,7 @@ export class AuthController {
 
     } catch (e) {
       console.log(e);
-      res.code(500);
+      res.status(500);
     }
 
   }
