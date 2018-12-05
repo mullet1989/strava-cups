@@ -5,7 +5,10 @@ import { ConfigService } from './config/config.service';
 @Injectable()
 export class TypeormConfigProductionServiceService implements TypeOrmOptionsFactory {
 
+  private readonly shouldRebuild: boolean = false;
+
   constructor(private readonly configService: ConfigService) {
+    this.shouldRebuild = configService.get('SHOULD_REBUILD') === 'true';
   }
 
   createTypeOrmOptions(): TypeOrmModuleOptions {
@@ -13,8 +16,7 @@ export class TypeormConfigProductionServiceService implements TypeOrmOptionsFact
       type: 'postgres',
       url: this.configService.get('DATABASE_URL'),
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      // synchronize: true, // will create on first run
-      synchronize: false, // will create on first run
+      synchronize: this.shouldRebuild,
     };
   }
 }
