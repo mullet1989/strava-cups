@@ -7,22 +7,26 @@ import { AthleteService } from '../athlete/athlete.service';
 import { Athlete } from '../entity/athlete.entity';
 import { AthleteAccessToken } from '../entity/athlete.accesstoken.entity';
 import { AuthService } from './auth.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Controller()
 export class AuthController {
 
   constructor(@Inject(STRAVA_SERVICE_TOKEN) private readonly stravaService: StravaService,
               private readonly athleteService: AthleteService,
+              @InjectRepository(AthleteAccessToken)
+              private readonly accessTokenRepository: Repository<AthleteAccessToken>,
               private readonly http: HttpService,
               private readonly _auth: AuthService) {
   }
 
-  @Get("connect")
+  @Get('connect')
   connect(@Res() res): any {
     return res.redirect(this.stravaService.loginUrl);
   }
 
-  @Get("exchange")
+  @Get('exchange')
   async exchange(@Query() query, @Req() req, @Res() res) {
     let code = query.code;
     // todo : exchange token
@@ -38,7 +42,11 @@ export class AuthController {
     try {
       let athlete = response.athlete;
 
-      let ath = await this.athleteService.getOne(athlete.id) || new Athlete();
+      let ath: Athlete = await this.athleteService.getOne(athlete.id);
+      const isNew = ath === undefined;
+      if (isNew) {
+        ath = new Athlete();
+      }
       // athlete
       ath.athlete_id = athlete.id;
       ath.first_name = athlete.firstname;
@@ -52,19 +60,24 @@ export class AuthController {
       let access_token = new AthleteAccessToken();
       access_token.access_token = response.access_token;
       access_token.refresh_token = response.refresh_token;
-      access_token.expires_datetime = new Date(response.expires_at);
+      access_token.create_datetime = new Date();
+      access_token.expires_datetime = new Date(response.expires_at * 1000);
       access_token.athlete = ath;
       ath.access_tokens.push(access_token);
 
-      await this.athleteService.insert(ath);
+      if (isNew) {
+        await this.athleteService.insert(ath);
+      } else {
+        await this.accessTokenRepository.insert(access_token);
+      }
 
       // make sessions
       let anon = req.anon;
       await this._auth.newSessionAsync(anon, ath, access_token.expires_datetime);
 
       res.render('success', {
-        firstname: response.athlete.firstname,
-        lastname: response.athlete.lastname,
+        first_name: response.athlete.firstname,
+        last_name: response.athlete.lastname,
       });
 
     } catch (e) {

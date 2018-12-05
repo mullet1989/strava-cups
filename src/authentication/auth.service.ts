@@ -72,7 +72,8 @@ export class AuthService {
     accessToken.access_token = newAccessToken.access_token;
     accessToken.refresh_token = newAccessToken.refresh_token;
     accessToken.athlete = athlete;
-    accessToken.expires_datetime = new Date(newAccessToken.expires_at);
+    accessToken.create_datetime = new Date();
+    accessToken.expires_datetime = new Date(newAccessToken.expires_at * 1000);
     await this.accessTokenRepository.insert(accessToken);
 
     return accessToken;

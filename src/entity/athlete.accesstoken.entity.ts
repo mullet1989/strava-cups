@@ -17,11 +17,11 @@ export class AthleteAccessToken {
   @JoinColumn({ referencedColumnName: 'athlete_id', name: 'athlete_id' })
   athlete: Athlete;
 
-  @Column({ default: () => 'now()' })
+  @Column()
   create_datetime: Date;
 
   // access_token expires 6 hours after creation
-  @Column({ default: () => 'now() + interval \'6 hours\'' })
+  @Column()
   expires_datetime: Date;
 
 }
