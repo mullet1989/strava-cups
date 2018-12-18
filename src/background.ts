@@ -1,5 +1,3 @@
-import { AthleteService } from './athlete/athlete.service';
-import { ConfigService } from './config/config.service';
 import Timer = NodeJS.Timer;
 
 class BackgroundWorker {
@@ -23,15 +21,10 @@ class BackgroundWorker {
     this._isWorking = value;
   }
 
-  constructor(
-    private readonly athleteService: AthleteService,
-    private readonly configService: ConfigService,
-  ) {
-    let shouldFetch: boolean = this.configService.get('BACKGROUND_COLLECT') === 'true';
-    if (!shouldFetch) {
-      return;
-    }
+  constructor() {
+  }
 
+  start() {
     const msInterval = process.env.NODE_ENV === 'development'
       ? 1000 * 20 // 20 seconds
       : 1000 * 60 * 15; // 15 minutes (strava rate limit)
@@ -54,8 +47,10 @@ class BackgroundWorker {
 
   async DoWork(): Promise<void> {
     setTimeout(() => {
+      console.log(new Date()); // console logs the time of the day
     }, 100);
   }
-
-
 }
+
+const worker = new BackgroundWorker();
+worker.start();

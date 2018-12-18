@@ -36,7 +36,7 @@ import { TypeormConfigProductionServiceService } from './typeorm.config.producti
     })
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [/* AppService */],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {
