@@ -24,4 +24,9 @@ export class AthleteAccessToken {
   @Column()
   expires_datetime: Date;
 
+
+  get isExpired() {
+    return this.expires_datetime < new Date();
+  }
+
 }

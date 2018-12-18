@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Unique, JoinColumn }
 import { AthleteAccessToken } from './athlete.accesstoken.entity';
 import { Session } from './session.entity';
 import { Activity } from './activity.entity';
+import * as _ from 'lodash';
 
 @Entity('athlete')
 export class Athlete {
@@ -29,5 +30,9 @@ export class Athlete {
 
   @Column({ default: () => 'now()' })
   create_datetime: Date;
+
+  get latest_token(): AthleteAccessToken {
+    return _.minBy(this.access_tokens, 'create_datetime');
+  }
 
 }

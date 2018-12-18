@@ -1,5 +1,6 @@
 import { Controller, Get, Render, Req, Res } from '@nestjs/common';
 import { AthleteService } from './athlete.service';
+import { Athlete } from '../entity/athlete.entity';
 
 
 @Controller()
@@ -14,13 +15,15 @@ export class AthleteController {
     let athlete = req.athlete;
     try {
       let activities = await this._athleteService.getDbActivitiesAsync(athlete, 10);
-      const transformed = activities.map((a) => {
-        a.distance = a.distance / 1000;
-
-      });
       return { activities: activities };
     } catch (e) {
       return e.message;
     }
+  }
+
+  @Get('compare')
+  @Render('compare')
+  async compare(@Req() req, @Res() res) {
+    return { athlete1: new Athlete() };
   }
 }

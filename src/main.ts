@@ -2,9 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { join } from 'path';
 import * as cookie from 'cookie-parser';
-import * as moment from "moment"
-
-const hbs = require('hbs');
+import { registerHelpers } from './hbs.helpers';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,9 +10,9 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
 
-  hbs.registerHelper('format_date', (date: Date) => {
-    return moment(date).format("dddd, MMMM Do YYYY, HH:mm")
-  });
+  // register handlebars helpers
+  registerHelpers();
+
   app.setViewEngine('hbs');
   app.use(cookie('secretstring'));
 

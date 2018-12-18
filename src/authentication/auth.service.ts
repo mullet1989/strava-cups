@@ -2,12 +2,9 @@ import { Athlete } from '../entity/athlete.entity';
 import { Session } from '../entity/session.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AthleteAccessToken } from '../entity/athlete.accesstoken.entity';
-import { ConfigService } from '../config/config.service';
-import { catchError, map } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { StravaBody } from '../strava/strava.models';
+import { AthleteService } from '../athlete/athlete.service';
 
 @Injectable()
 export class AuthService {
@@ -16,8 +13,7 @@ export class AuthService {
               private readonly sessionRepository: Repository<Session>,
               @InjectRepository(AthleteAccessToken)
               private readonly accessTokenRepository: Repository<AthleteAccessToken>,
-              private readonly _configService: ConfigService,
-              private readonly _httpService: HttpService) {
+              private readonly athleteService: AthleteService) {
   }
 
   async newSessionAsync(anon: string, athlete: Athlete, expires: Date) {
@@ -37,7 +33,7 @@ export class AuthService {
       return session.athlete;
       // session exists but is expired -> make new session
     } else if (session && session.expires_datetime >= now) {
-      const accessToken = await this.refreshTokenAsync(session.athlete);
+      const accessToken = await this.athleteService.refreshTokenAsync(session.athlete);
       await this.newSessionAsync(anon, accessToken.athlete, accessToken.expires_datetime);
       return accessToken.athlete;
     } else {
@@ -45,37 +41,5 @@ export class AuthService {
     }
   }
 
-  async refreshTokenAsync(athlete: Athlete): Promise<AthleteAccessToken> {
-    const url: string = `https://www.strava.com/oauth/token`;
-    const grant_type: string = 'refresh_token';
-    const refresh_token: string = this._configService.get('REFRESH_TOKEN');
-    const client_id: string = this._configService.get('CLIENT_ID');
-    const client_secret: string = this._configService.get('CLIENT_SECRET');
 
-    const newAccessToken = await this._httpService.post<StravaBody>(url,
-      {
-        'client_id': client_id,
-        'client_secret': client_secret,
-        'grant_type': grant_type,
-        'refresh_token': refresh_token,
-      })
-      .pipe(
-        map(response => response.data),
-        catchError(err => {
-          console.log(err); // log error and return empty response
-          return of(new StravaBody());
-        }),
-      )
-      .toPromise();
-
-    let accessToken = new AthleteAccessToken();
-    accessToken.access_token = newAccessToken.access_token;
-    accessToken.refresh_token = newAccessToken.refresh_token;
-    accessToken.athlete = athlete;
-    accessToken.create_datetime = new Date();
-    accessToken.expires_datetime = new Date(newAccessToken.expires_at * 1000);
-    await this.accessTokenRepository.insert(accessToken);
-
-    return accessToken;
-  }
 }
