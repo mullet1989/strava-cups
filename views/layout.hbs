@@ -8,13 +8,45 @@
 
     <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- i did it my waaaaaay -->
+    <link rel="stylesheet" href="/css/site.css">
 </head>
 
 <body>
+<nav>
+    <div class="nav-wrapper strava-orange">
+        <a href="#" data-target="nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down h100">
+            <li class="h100"><a href="https://strava.com" class="h100">
+                <img class="h100" src="https://pbs.twimg.com/profile_images/900411562250256384/ALkwa0jf_400x400.jpg"/></a>
+            </li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/strava/athlete/best">Best</a></li>
+            <li><a href="/strava/athlete/compare">Compare</a></li>
+            <li><a href="/strava/athlete/activities">Activities</a></li>
+        </ul>
+    </div>
+</nav>
+
+<ul class="sidenav" id="nav">
+    <li><a href="/">Home</a></li>
+    <li><a href="/strava/athlete/best">Best</a></li>
+    <li><a href="/strava/athlete/compare">Compare</a></li>
+    <li><a href="/strava/athlete/activities">Activities</a></li>
+</ul>
 <div class="container">
     {{{body}}}
 </div>
 <!--JavaScript at end of body for optimized loading-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.sidenav');
+        var instances = M.Sidenav.init(elems, {});
+    });
+
+</script>
 </body>
 </html>

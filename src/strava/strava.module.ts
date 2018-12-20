@@ -4,18 +4,20 @@ import { ConfigModule } from '../config/config.module';
 import { ConfigService } from '../config/config.service';
 import { STRAVA_SERVICE_TOKEN } from '../strava.constants';
 import { StravaController } from './strava.controller';
+import { HttpClient } from '../athlete/http.client';
+import { AthleteModule } from '../athlete/athlete.module';
 
 const StravaProviders = [
   {
     provide: STRAVA_SERVICE_TOKEN,
-    useFactory: (http: HttpService, config: ConfigService) => {
+    useFactory: (http: HttpClient, config: ConfigService) => {
 
       let clientID = parseInt(config.get('CLIENT_ID'));
       let clientSecret = config.get('CLIENT_SECRET');
 
       return new StravaService(clientID, clientSecret, http, config);
     },
-    inject: [HttpService, ConfigService],
+    inject: [HttpClient, ConfigService],
   },
 ];
 
@@ -24,6 +26,7 @@ const StravaProviders = [
   imports: [
     HttpModule,
     ConfigModule,
+    AthleteModule
   ],
   controllers: [StravaController],
   providers: [...StravaProviders],

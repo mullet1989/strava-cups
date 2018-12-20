@@ -13,6 +13,7 @@ import { AthleteModule } from './athlete/athlete.module';
 import { TrackingMiddleware } from './authentication/tracking.middleware';
 import { ConfigService } from './config/config.service';
 import { TypeormConfigProductionServiceService } from './typeorm.config.production.service';
+import { HttpClient } from './athlete/http.client';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import { TypeormConfigProductionServiceService } from './typeorm.config.producti
     })
   ],
   controllers: [AppController],
-  providers: [/* AppService */],
+  providers: [AppService], // this is doing the heavy lifting
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): MiddlewareConsumer | void {

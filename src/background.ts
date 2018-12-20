@@ -46,9 +46,7 @@ class BackgroundWorker {
   }
 
   async DoWork(): Promise<void> {
-    setTimeout(() => {
-      console.log(new Date()); // console logs the time of the day
-    }, 100);
+    console.log('burning CPU baby');
   }
 }
 

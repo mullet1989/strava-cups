@@ -1,10 +1,11 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, HttpService, Module } from '@nestjs/common';
 import { AthleteService } from './athlete.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Athlete } from '../entity/athlete.entity';
 import { AthleteController } from './athlete.controller';
 import { Activity } from '../entity/activity.entity';
 import { AthleteAccessToken } from '../entity/athlete.accesstoken.entity';
+import { HttpClient } from './http.client';
 
 @Module({
   imports: [
@@ -12,14 +13,15 @@ import { AthleteAccessToken } from '../entity/athlete.accesstoken.entity';
       [
         Athlete,
         Activity,
-        AthleteAccessToken
+        AthleteAccessToken,
       ]),
   ],
   providers: [
-    AthleteService
+    AthleteService,
+    HttpClient,
   ],
   controllers: [AthleteController],
-  exports: [AthleteService],
+  exports: [AthleteService, HttpClient],
 })
 export class AthleteModule {
 }

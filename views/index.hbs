@@ -1,2 +1,6 @@
 <h1 class="left-align">{{ message }}</h1>
-<a href="/auth/connect" class="waves-effect waves-light orange darken-1 btn">Connect</a>
+{{#if athlete}}
+    <a href="/strava/athlete/activities" class="waves-effect waves-light strava-orange btn">See my activities</a>
+{{else}}
+    <a href="/auth/connect" class="waves-effect waves-light strava-orange btn">Connect</a>
+{{/if}}

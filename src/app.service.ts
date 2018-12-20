@@ -37,8 +37,8 @@ export class AppService {
     }
 
     const msInterval = process.env.NODE_ENV === 'development'
-      ? 1000 * 20 // 20 seconds
-      : 1000 * 60 * 15; // 15 minutes (strava rate limit)
+      ? 1000 * 5 // 5 seconds
+      : 1000 * 60 * 1; // 1 minutes (strava rate limit)
 
     const callback = () => {
       if (!this.isWorking) {

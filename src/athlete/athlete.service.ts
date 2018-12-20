@@ -1,4 +1,4 @@
-import { HttpService, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Athlete } from '../entity/athlete.entity';
 import { Repository } from 'typeorm';
@@ -10,6 +10,7 @@ import { of, throwError } from 'rxjs';
 import { StravaBody } from '../strava/strava.models';
 import { ConfigService } from '../config/config.service';
 import * as _ from 'lodash';
+import { HttpClient } from './http.client';
 
 @Injectable()
 export class AthleteService {
@@ -23,7 +24,7 @@ export class AthleteService {
     private readonly activityRepository: Repository<Activity>,
     @InjectRepository(AthleteAccessToken)
     private readonly accessTokenRepository: Repository<AthleteAccessToken>,
-    private readonly _http: HttpService,
+    private readonly _http: HttpClient,
     private readonly _configService: ConfigService,
   ) {
     console.log('athlete service constructor');
@@ -122,7 +123,7 @@ export class AthleteService {
   async refreshTokenAsync(athlete: Athlete): Promise<AthleteAccessToken> {
     const url: string = `https://www.strava.com/oauth/token`;
     const grant_type: string = 'refresh_token';
-    const refresh_token: string = athlete.latest_token ? athlete.latest_token.access_token : '';
+    const refresh_token: string = athlete.latest_token ? athlete.latest_token.refresh_token : '';
     const client_id: string = this._configService.get('CLIENT_ID');
     const client_secret: string = this._configService.get('CLIENT_SECRET');
 
@@ -135,8 +136,8 @@ export class AthleteService {
       })
       .pipe(
         map(response => response.data),
-        catchError(err => {
-          console.log(err); // log error and return empty response
+        catchError(msg => {
+          console.log(msg.data.errors); // log error and return empty response
           return of(new StravaBody());
         }),
       )

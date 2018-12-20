@@ -24,6 +24,12 @@ export class AthleteController {
   @Get('compare')
   @Render('compare')
   async compare(@Req() req, @Res() res) {
-    return { athlete1: new Athlete() };
+    return { athlete: new Athlete() };
+  }
+
+  @Get('best')
+  @Render('best')
+  async best(@Req() req, @Res() res) {
+    return { athlete: new Athlete() };
   }
 }

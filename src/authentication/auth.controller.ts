@@ -1,4 +1,4 @@
-import { Controller, Get, HttpService, Inject, Query, Render, Req, Res } from '@nestjs/common';
+import { Controller, Get, Inject, Query, Render, Req, Res } from '@nestjs/common';
 import { StravaService } from '../strava/strava.service';
 import { map } from 'rxjs/operators';
 import { StravaBody } from '../strava/strava.models';
@@ -9,6 +9,7 @@ import { AthleteAccessToken } from '../entity/athlete.accesstoken.entity';
 import { AuthService } from './auth.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { HttpClient } from '../athlete/http.client';
 
 @Controller()
 export class AuthController {
@@ -17,7 +18,7 @@ export class AuthController {
               private readonly athleteService: AthleteService,
               @InjectRepository(AthleteAccessToken)
               private readonly accessTokenRepository: Repository<AthleteAccessToken>,
-              private readonly http: HttpService,
+              private readonly http: HttpClient,
               private readonly _auth: AuthService) {
   }
 

@@ -1,0 +1,16 @@
+/* this is nicked from the strava website */
+.strava-orange {
+    background-color: #fc4c02;
+}
+
+.h100 {
+    height: 100% !important;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-middle {
+    align-items: center;
+}

@@ -1,5 +1,6 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '../config/config.service';
+import { HttpClient } from '../athlete/http.client';
 
 @Injectable()
 export class StravaService {
@@ -19,7 +20,7 @@ export class StravaService {
   constructor(
     private readonly _id: number,
     private readonly _secret: string,
-    private readonly _httpClient: HttpService,
+    private readonly _http: HttpClient,
     private readonly _config: ConfigService) {
 
     this.redirect_url = _config.get("REDIRECT_URL");
