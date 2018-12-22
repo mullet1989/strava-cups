@@ -17,7 +17,7 @@ import { AthleteAccessToken } from '../entity/athlete.accesstoken.entity';
     AuthService,
     AthleteService,
   ],
-  exports: [AuthService],
+  exports: [AuthService, AthleteModule],
 })
 export class AuthModule {
 }

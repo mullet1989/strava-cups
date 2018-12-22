@@ -4,13 +4,15 @@ import { Athlete } from './entity/athlete.entity';
 import Timer = NodeJS.Timer;
 import { ConfigService } from './config/config.service';
 import { Activity } from './entity/activity.entity';
+import { AuthService } from './authentication/auth.service';
+import { RatesService } from './rates/rates.service';
 
 @Injectable()
 export class AppService {
 
   private _isWorking: boolean = false;
   private _startedWorkingTime: Date = new Date();
-  private _interval: Timer;
+  private _timeout: Timer;
 
   get isWorking() {
     return this._isWorking;
@@ -18,39 +20,36 @@ export class AppService {
 
   set isWorking(value: boolean) {
     if (value) {
-      console.log('working now');
+      console.log(`START: ${new Date().toISOString()}`);
       this._startedWorkingTime = new Date();
     } else {
       let dateDiff = new Date().getTime() - this._startedWorkingTime.getTime();
-      console.log(`stopped working, time taken: ${dateDiff}`);
+      console.log(`STOP: ${new Date().toISOString()} -> ${dateDiff}ms`);
     }
     this._isWorking = value;
   }
 
+  private callback = () => {
+    if (!this.isWorking) {
+      this.getActivities();
+      this.isWorking = true;
+    } else {
+      console.log('still working on the last one');
+    }
+  };
+
   constructor(
     private readonly athleteService: AthleteService,
+    private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly rateService: RatesService,
   ) {
     let shouldFetch: boolean = this.configService.get('BACKGROUND_COLLECT') === 'true';
     if (!shouldFetch) {
       return;
     }
 
-    const msInterval = process.env.NODE_ENV === 'development'
-      ? 1000 * 5 // 5 seconds
-      : 1000 * 60 * 1; // 1 minutes (strava rate limit)
-
-    const callback = () => {
-      if (!this.isWorking) {
-        this.getActivities();
-        this.isWorking = true;
-      } else {
-        console.log('still working on the last one');
-      }
-    };
-
-    setTimeout(() => callback(), 5000); // invoke immediately
-    this._interval = setInterval(callback, msInterval);
+    this._timeout = setTimeout(this.callback, this.rateService.interval);
   }
 
   async getActivities() {
@@ -73,10 +72,12 @@ export class AppService {
           }
         }
       }
+      this.isWorking = false;
+      // queue another one
+      this._timeout = setTimeout(this.callback, this.rateService.interval);
     } catch (e) {
-      clearTimeout(this._interval); // stop working
+      clearTimeout(this._timeout); // stop working
       console.log(e.message);
-    } finally {
       this.isWorking = false;
     }
   }

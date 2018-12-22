@@ -9,15 +9,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeormConfigDevelopmentService } from './typeorm.config.development.service';
 import { RouterModule } from 'nest-router';
 import { routes } from './routes';
-import { AthleteModule } from './athlete/athlete.module';
 import { TrackingMiddleware } from './authentication/tracking.middleware';
 import { ConfigService } from './config/config.service';
 import { TypeormConfigProductionServiceService } from './typeorm.config.production.service';
-import { HttpClient } from './athlete/http.client';
 
 @Module({
   imports: [
-    AthleteModule,
     StravaModule,
     AuthModule,
     ConfigModule,

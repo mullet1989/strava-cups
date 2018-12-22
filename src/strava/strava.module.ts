@@ -5,7 +5,7 @@ import { ConfigService } from '../config/config.service';
 import { STRAVA_SERVICE_TOKEN } from '../strava.constants';
 import { StravaController } from './strava.controller';
 import { HttpClient } from '../athlete/http.client';
-import { AthleteModule } from '../athlete/athlete.module';
+import { AuthModule } from '../authentication/auth.module';
 
 const StravaProviders = [
   {
@@ -26,7 +26,7 @@ const StravaProviders = [
   imports: [
     HttpModule,
     ConfigModule,
-    AthleteModule
+    AuthModule
   ],
   controllers: [StravaController],
   providers: [...StravaProviders],

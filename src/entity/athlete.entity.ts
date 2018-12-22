@@ -32,7 +32,7 @@ export class Athlete {
   create_datetime: Date;
 
   get latest_token(): AthleteAccessToken {
-    return _.minBy(this.access_tokens, 'create_datetime');
+    return _.maxBy(this.access_tokens, 'create_datetime');
   }
 
 }

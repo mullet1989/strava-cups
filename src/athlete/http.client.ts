@@ -1,13 +1,17 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
+import { RatesService } from '../rates/rates.service';
+import { tap } from 'rxjs/operators';
+import * as _ from 'lodash';
 
 @Injectable()
 export class HttpClient {
 
   private readonly requests: {} = {};
 
-  constructor(private readonly _http: HttpService) {
+  constructor(private readonly _http: HttpService,
+              private readonly _rates: RatesService) {
   }
 
   request<T = any>(config: AxiosRequestConfig): Observable<AxiosResponse<T>> {
@@ -15,13 +19,38 @@ export class HttpClient {
   }
 
   get<T = any>(url: string, config?: AxiosRequestConfig): Observable<AxiosResponse<T>> {
-    if (this.requests.hasOwnProperty(url)) {
-      this.requests[url] += 1;
+    // todo : anything extra here that you want
+    // console.log(`API calls to : ${path}, ${this.requests[path]}`);
+    if (this._rates.fifteenCalls + 5 < RatesService.FifteenRate
+      || this._rates.dayCalls + 5 < RatesService.DayRate) {
+
+      return this._http.get(url, config)
+        .pipe(
+          tap(resp => {
+            const [fifteenMin, day] = resp.headers['x-ratelimit-usage'].split(',').map(Number);
+            this._rates.fifteenCalls = fifteenMin;
+            this._rates.dayCalls = day;
+
+            // todo : adjust the interval according to the distance from the limit
+            const allowance = _.max([fifteenMin / RatesService.FifteenRate, fifteenMin / RatesService.DayRate]);
+
+            if (allowance > 0.9) {
+              this._rates.interval *= 5;
+            } else if (allowance > 0.1) {
+              this._rates.interval *= 2;
+            } else {
+              let int = this._rates.interval / 2; // less time between requests
+              int = _.max([int, 1000]); // never drop below this number
+              if (int !== this._rates.interval) {
+                this._rates.interval = int;
+              }
+            }
+
+          }));
+
     } else {
-      this.requests[url] = 1;
+      throw new Error('need to slow down');
     }
-    console.log(this.requests[url]);
-    return this._http.get(url, config);
   }
 
   delete<T = any>(url: string, config?: AxiosRequestConfig): Observable<AxiosResponse<T>> {

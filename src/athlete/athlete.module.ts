@@ -6,6 +6,7 @@ import { AthleteController } from './athlete.controller';
 import { Activity } from '../entity/activity.entity';
 import { AthleteAccessToken } from '../entity/athlete.accesstoken.entity';
 import { HttpClient } from './http.client';
+import { RatesModule } from '../rates/rates.module';
 
 @Module({
   imports: [
@@ -15,13 +16,14 @@ import { HttpClient } from './http.client';
         Activity,
         AthleteAccessToken,
       ]),
+    RatesModule
   ],
   providers: [
     AthleteService,
     HttpClient,
   ],
   controllers: [AthleteController],
-  exports: [AthleteService, HttpClient],
+  exports: [AthleteService, HttpClient, RatesModule],
 })
 export class AthleteModule {
 }

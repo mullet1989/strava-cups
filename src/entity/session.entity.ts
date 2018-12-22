@@ -12,7 +12,7 @@ export class Session {
   athlete: Athlete;
 
   @Column()
-  @Index({ unique: true })
+  @Index()
   anon: string;
 
   @Column({ default: () => 'now()' })

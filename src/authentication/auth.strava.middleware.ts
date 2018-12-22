@@ -20,7 +20,7 @@ export class StravaAuthMiddleware implements NestMiddleware {
 
       if (!req.athlete) {
         // return to home page in production
-        this.isDebug ? res.status(HttpStatus.UNAUTHORIZED).send() : res.redirect('/');
+        this.isDebug && false ? res.status(HttpStatus.UNAUTHORIZED).send() : res.redirect('/');
         return;
       }
 

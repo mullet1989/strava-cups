@@ -4,7 +4,7 @@ import { Athlete } from '../entity/athlete.entity';
 import { Repository } from 'typeorm';
 import { AxiosRequestConfig } from 'axios';
 import { AthleteAccessToken } from '../entity/athlete.accesstoken.entity';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Activity } from '../entity/activity.entity';
 import { of, throwError } from 'rxjs';
 import { StravaBody } from '../strava/strava.models';
@@ -27,7 +27,7 @@ export class AthleteService {
     private readonly _http: HttpClient,
     private readonly _configService: ConfigService,
   ) {
-    console.log('athlete service constructor');
+
   }
 
   getAll(): Promise<Athlete[]> {
@@ -65,11 +65,12 @@ export class AthleteService {
 
   async getActivitiesAsync(athlete: Athlete, page: number = 1, date?: Date): Promise<Activity[]> {
 
-    let latestToken = _.minBy(athlete.access_tokens, 'create_datetime') || new AthleteAccessToken();
-
-    // new token if the old one is expired
+    let latestToken: AthleteAccessToken = _.maxBy(athlete.access_tokens, 'create_datetime');
     if (latestToken.isExpired) {
-      latestToken = await this.refreshTokenAsync(athlete);
+
+      let tkn = await this.refreshTokenAsync(athlete);
+      latestToken = tkn;
+
     }
 
     let config: AxiosRequestConfig = {
