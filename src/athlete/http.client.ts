@@ -36,7 +36,7 @@ export class HttpClient {
 
             if (allowance > 0.9) {
               this._rates.interval *= 5;
-            } else if (allowance > 0.1) {
+            } else if (allowance > 0.9) {
               this._rates.interval *= 2;
             } else {
               let int = this._rates.interval / 2; // less time between requests
