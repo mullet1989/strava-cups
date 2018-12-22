@@ -34,7 +34,7 @@ export class AppService {
       this.getActivities();
       this.isWorking = true;
     } else {
-      console.log('still working on the last one');
+      console.log('WORK IN PROGRESS');
     }
   };
 

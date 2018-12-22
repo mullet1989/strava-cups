@@ -54,7 +54,7 @@ export class AthleteService {
     }
   }
 
-  async getDbActivitiesAsync(athlete: Athlete, number: number = 1): Promise<Activity[]> {
+  async getDbActivitiesAsync(athlete: Athlete, number: number = 2147483647): Promise<Activity[]> {
     return this.activityRepository
       .createQueryBuilder('activity')
       .where('activity.athlete_id=:id', { id: athlete.id })
