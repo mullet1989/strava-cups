@@ -58,11 +58,11 @@ export class AthleteController {
           athlete_id: athlete.id,
           first_name: athlete.first_name,
           last_name: athlete.last_name,
-          kudos: kudos.kudos_count,
-          cups: cups.achievement_count,
-          comments: comments.comment_count,
-          others: others.athlete_count,
-          speed: speed.average_speed,
+          kudos: kudos,
+          cups: cups,
+          comments: comments,
+          others: others,
+          speed: speed,
           number: activities.length
         });
 

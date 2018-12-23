@@ -3,7 +3,6 @@
 <a href="/strava/athlete/activities" class="waves-effect waves-light strava-orange btn">activities</a>
 
 
-
 <table id="leaders" class="responsive-table highlight">
     <thead>
     <tr>
@@ -20,11 +19,11 @@
     {{#each leaders}}
         <tr>
             <td>{{first_name}} {{last_name}}</td>
-            <td>{{kudos}}</td>
-            <td>{{cups}}</td>
-            <td>{{comments}}</td>
-            <td>{{others}}</td>
-            <td>{{speed}}m/s</td>
+            <td title="{{kudos.name}}">{{kudos.kudos_count}}</td>
+            <td title="{{cups.name}}">{{cups.achievement_count}}</td>
+            <td title="{{comments.name}}">{{comments.comment_count}}</td>
+            <td title="{{others.name}}">{{others.athlete_count}}</td>
+            <td title="{{speed.name}}">{{speed.average_speed}}m/s</td>
             <td>{{number}}</td>
         </tr>
     {{/each}}
@@ -101,4 +100,22 @@
             table.rows[0].children[n].getElementsByTagName('i')[0].classList.add('down');
         }
     }
+</script>
+
+
+<script src="https://unpkg.com/popper.js@1.14.6/dist/umd/popper.js"></script>
+<script src="https://unpkg.com/tooltip.js@1.3.1/dist/umd/tooltip.js"></script>
+
+<script>
+
+
+    var records = document.getElementsByTagName('td');
+    for (var i = 0; i < records.length; i++) {
+        new Tooltip(records[i], {
+            placement: 'bottom', // or bottom, left, right, and variations
+            textContent: 'aajsoidasd9',
+        });
+    }
+
+
 </script>
