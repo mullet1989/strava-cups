@@ -41,18 +41,18 @@ export class AthleteController {
 
     for (let athlete of athletes) {
       try {
-        const activities = await this._athleteService.getDbActivitiesAsync(athlete) || new Array<Activity>();
+        const activities = await this._athleteService.getDbActivitiesAsync(athlete);
 
         // kudos
-        const kudos: Activity = _.maxBy(activities, 'kudos_count');
+        const kudos: Activity = _.maxBy(activities, 'kudos_count') || new Activity();
         // cups
-        const cups: Activity = _.maxBy(activities, 'achievement_count');
+        const cups: Activity = _.maxBy(activities, 'achievement_count') || new Activity();
         // comments
-        const comments: Activity = _.maxBy(activities, 'comment_count');
+        const comments: Activity = _.maxBy(activities, 'comment_count') || new Activity();
         // athletes
-        const others: Activity = _.maxBy(activities, 'athlete_count');
+        const others: Activity = _.maxBy(activities, 'athlete_count') || new Activity();
         // speed
-        const speed: Activity = _.maxBy(activities, 'average_speed');
+        const speed: Activity = _.maxBy(activities, 'average_speed') || new Activity();
 
         leaders.push({
           athlete_id: athlete.id,
@@ -74,7 +74,7 @@ export class AthleteController {
     // sort by kudos desc
     const orderedLeaders = _.orderBy(leaders, ['kudos', 'desc']);
 
-    return { leaders: leaders };
+    return { leaders: orderedLeaders };
   }
 
   @Get('best')
