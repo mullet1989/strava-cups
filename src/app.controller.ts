@@ -18,12 +18,12 @@ export class AppController {
     if (req.athlete) {
       const user: Athlete = req.athlete;
       return {
-        message: `Welcome ${user.first_name} ${user.last_name}`,
+        message: `welcome ${user.first_name} ${user.last_name}`,
         athlete: user,
       };
     } else {
       return {
-        message: 'Get started with Strava',
+        message: 'get started with strava',
         athlete: null,
       };
     }

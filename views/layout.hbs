@@ -14,29 +14,36 @@
 </head>
 
 <body>
-<nav>
-    <div class="nav-wrapper strava-orange">
-        <a href="#" data-target="nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-        <ul class="right hide-on-med-and-down h100">
-            <li class="h100"><a href="https://strava.com" class="h100">
-                <img class="h100" src="/img/Strava.png"/></a>
-            </li>
+<div id="cntr">
+    <div id="header">
+        <nav>
+            <div class="nav-wrapper strava-orange">
+                <a href="#" data-target="nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down h100">
+                    <li class="h100"><a href="https://strava.com" class="h100">
+                        <img class="h100" src="/img/Strava.png"/></a>
+                    </li>
+                    <li><a href="/">home</a></li>
+                    <li><a href="/strava/athlete/best">best</a></li>
+                    <li><a href="/strava/athlete/leaders">leaders</a></li>
+                    <li><a href="/strava/athlete/activities">activities</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <ul class="sidenav" id="nav">
             <li><a href="/">home</a></li>
             <li><a href="/strava/athlete/best">best</a></li>
             <li><a href="/strava/athlete/leaders">leaders</a></li>
             <li><a href="/strava/athlete/activities">activities</a></li>
         </ul>
     </div>
-</nav>
-
-<ul class="sidenav" id="nav">
-    <li><a href="/">home</a></li>
-    <li><a href="/strava/athlete/best">best</a></li>
-    <li><a href="/strava/athlete/leaders">leaders</a></li>
-    <li><a href="/strava/athlete/activities">activities</a></li>
-</ul>
-<div class="container">
-    {{{body}}}
+    <div class="container" id="body">
+        {{{body}}}
+    </div>
+    <div id="footer" class="valign-wrapper" style="justify-content: center; opacity: 0.5;">
+        <a href="https://github.com/mullet1989" class="center-align white-text">contact: mullet1989</a>
+    </div>
 </div>
 <!--JavaScript at end of body for optimized loading-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -49,4 +56,34 @@
 
 </script>
 </body>
+
+<style>
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    #cntr {
+        min-height: 100%;
+        position: relative;
+    }
+
+    #body {
+        padding: 10px;
+        padding-bottom: 60px; /* Height of the footer */
+    }
+
+    #footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 60px; /* Height of the footer */
+        background: #fc4c02;
+    }
+
+
+</style>
 </html>

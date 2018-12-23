@@ -69,7 +69,7 @@ i.down {
     animation: newKudo 1s ease;
     animation-iteration-count: infinite;
     background-position: 0 99.99%;
-    fill: red;
+    fill: #fc4c02;
     color: transparent;
     background-repeat: no-repeat;
     background-size: cover;
@@ -82,7 +82,7 @@ i.down {
     animation: newKudo 1s ease;
     animation-iteration-count: infinite;
     background-position: 0 99.99%;
-    fill: red;
+    fill: #fc4c02;
     color: transparent;
     background-repeat: no-repeat;
     background-size: cover;
