@@ -33,7 +33,7 @@ export class AthleteController {
 
     for (let athlete of athletes) {
       try {
-        const activities = await this._athleteService.getDbActivitiesAsync(athlete);
+        const activities = await this._athleteService.getDbActivitiesAsync(athlete) || new Array<Activity>();
 
         // kudos
         const kudos: Activity = _.maxBy(activities, 'kudos_count');
@@ -64,7 +64,7 @@ export class AthleteController {
     }
 
     // sort by kudos desc
-    const orderedLeaders = _.orderBy(leaders, ["kudos", "desc"]);
+    const orderedLeaders = _.orderBy(leaders, ['kudos', 'desc']);
 
     return { leaders: orderedLeaders };
   }
