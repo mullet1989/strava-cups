@@ -3,12 +3,12 @@
 <table id="leaders" class="responsive-table highlight">
     <thead>
     <tr>
-        <th onclick="sortTable(0)">name</th>
-        <th onclick="sortTable(1)">kudos</th>
-        <th onclick="sortTable(2)">cups</th>
-        <th onclick="sortTable(3)">comments</th>
-        <th onclick="sortTable(4)">others</th>
-        <th onclick="sortTable(5)">speed</th>
+        <th onclick="sortTable(0)">name<i class="asc"></i></th>
+        <th onclick="sortTable(1)">kudos<i class="down asc"></i></th>
+        <th onclick="sortTable(2)">cups<i class="asc"></i></th>
+        <th onclick="sortTable(3)">comments<i class="asc"></i></th>
+        <th onclick="sortTable(4)">others<i class="asc"></i></th>
+        <th onclick="sortTable(5)">speed<i class="asc"></i></th>
     </tr>
     </thead>
     <tbody>
@@ -35,6 +35,13 @@
         dir = 'asc';
         /* Make a loop that will continue until
         no switching has been done: */
+
+        // clear all at the beginning
+        for (var i = 0; i < table.rows[0].children.length; i++) {
+            table.rows[0].children[i].getElementsByTagName('i')[0].classList.remove('down');
+            table.rows[0].children[i].getElementsByTagName('i')[0].classList.remove('up');
+        }
+
         while (switching) {
             // Start by saying: no switching is done:
             switching = false;
@@ -79,6 +86,13 @@
                     switching = true;
                 }
             }
+        }
+        if (dir === 'desc') {
+            table.rows[0].children[n].getElementsByTagName('i')[0].classList.remove('down');
+            table.rows[0].children[n].getElementsByTagName('i')[0].classList.add('up');
+        } else {
+            table.rows[0].children[n].getElementsByTagName('i')[0].classList.remove('up');
+            table.rows[0].children[n].getElementsByTagName('i')[0].classList.add('down');
         }
     }
 </script>
