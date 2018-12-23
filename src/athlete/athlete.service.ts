@@ -86,6 +86,7 @@ export class AthleteService {
     let latestToken: AthleteAccessToken = _.maxBy(athlete.access_tokens, 'create_datetime');
     if (latestToken.isExpired) {
 
+      console.log(`refreshing token for ${athlete.first_name} ${athlete.last_name}`);
       let tkn = await this.refreshTokenAsync(athlete);
       latestToken = tkn;
 
@@ -106,7 +107,10 @@ export class AthleteService {
     let activities: any = await this._http.get<Activity[]>(url, config)
       .pipe(
         map(resp => resp.data),
-        catchError(err => throwError(err)),
+        catchError(msg => {
+          console.log(msg.data.errors); // log error and return empty response
+          return of(new Array<Activity>());
+        }),
         map<any[], Activity[]>((activities: any[]) => {
           let as = new Array<Activity>();
           for (let activity of activities) {
