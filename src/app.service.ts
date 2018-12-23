@@ -7,6 +7,7 @@ import { Activity } from './entity/activity.entity';
 import { AuthService } from './authentication/auth.service';
 import { RatesService } from './rates/rates.service';
 import * as moment from 'moment';
+import * as _ from 'lodash';
 
 @Injectable()
 export class AppService {
@@ -56,6 +57,7 @@ export class AppService {
   async getActivities() {
 
     let athletes: Athlete[] = await this.athleteService.getAll();
+    const athletesActivitiesFetched: number[] = [];
 
     for (let athlete of athletes) {
       let latestActivities: Activity[] = await this.athleteService.getDbActivitiesAsync(athlete, 1);
@@ -88,8 +90,9 @@ export class AppService {
           console.log(e.message);
         }
       }
-
+      athletesActivitiesFetched.push(athlete.athlete_id);
     }
+    console.log(`FETCHED FOR : ${athletesActivitiesFetched.length} ATHLETES`);
     this.isWorking = false;
     // queue another one
     this._timeout = setTimeout(this.callback, this.rateService.interval);
