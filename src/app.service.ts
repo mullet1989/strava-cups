@@ -9,6 +9,7 @@ import { RatesService } from './rates/rates.service';
 import * as moment from 'moment';
 import * as _ from 'lodash';
 import { run } from 'tslint/lib/runner';
+import { first } from 'rxjs/operators';
 
 @Injectable()
 export class AppService {
@@ -68,16 +69,15 @@ export class AppService {
           ? moment(latestActivities[0].start_date).add(-2, 'w').toDate() // 2 weeks back
           : new Date('1970-01-01');
 
-      if (athlete.athlete_id == 1110558) {
-        console.log(lastTime);
-      }
-
       let page: number = 1;
       const pageSize: number = 100;
       while (page < 5) {
         try {
 
           let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime, pageSize);
+          if (athlete.athlete_id == 1110558) {
+            console.log(`FETCHED ${activities.length} for FINN, PAGE : ${page}, DATE : ${lastTime}, PAGESIZE : ${pageSize}`);
+          }
           if (activities.length) {
             // get everything and then filter runs here
             const runs = _.filter(activities, { 'type': 'Run' });
