@@ -64,9 +64,9 @@ export class AthleteController {
     }
 
     // sort by kudos desc
-    const orderedLeaders = _.orderBy(leaders, ['kudos', 'desc']);
+    // const orderedLeaders = _.orderBy(leaders, ['kudos', 'desc']);
 
-    return { leaders: orderedLeaders };
+    return { leaders: leaders };
   }
 
   @Get('best')
