@@ -57,18 +57,19 @@ export class AppService {
 
     let athletes: Athlete[] = await this.athleteService.getAll();
 
-    try {
-      for (let athlete of athletes) {
-        let latestActivities: Activity[] = await this.athleteService.getDbActivitiesAsync(athlete, 1);
+    for (let athlete of athletes) {
+      let latestActivities: Activity[] = await this.athleteService.getDbActivitiesAsync(athlete, 1);
 
-        let lastTime =
-          (latestActivities && latestActivities.length)
-            ? moment(latestActivities[0].start_date).add(-2, 'w').toDate() // 2 weeks back
-            : new Date('1970-01-01');
+      let lastTime =
+        (latestActivities && latestActivities.length)
+          ? moment(latestActivities[0].start_date).add(-2, 'w').toDate() // 2 weeks back
+          : new Date('1970-01-01');
 
-        let page: number = 1;
-        const pageSize: number = 100;
-        while (page < 5) {
+      let page: number = 1;
+      const pageSize: number = 100;
+      while (page < 5) {
+        try {
+
           let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime, pageSize);
           if (activities.length) {
             await this.athleteService.saveActivitiesAsync(activities);
@@ -82,16 +83,16 @@ export class AppService {
           } else {
             break;
           }
+        } catch (e) {
+          // clearTimeout(this._timeout); // stop working
+          console.log(e.message);
         }
       }
-      this.isWorking = false;
-      // queue another one
-      this._timeout = setTimeout(this.callback, this.rateService.interval);
-    } catch (e) {
-      clearTimeout(this._timeout); // stop working
-      console.log(e.message);
-      this.isWorking = false;
+
     }
+    this.isWorking = false;
+    // queue another one
+    this._timeout = setTimeout(this.callback, this.rateService.interval);
   }
 
 }

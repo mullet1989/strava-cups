@@ -27,7 +27,15 @@ export class AthleteController {
   @Get('leaders')
   @Render('leaders')
   async leaders(@Req() req, @Res() res) {
-    const athletes: Athlete[] = await this._athleteService.getAll();
+
+    let athletes: Athlete[];
+    try {
+      athletes = await this._athleteService.getAll();
+    } catch (e) {
+      console.log(e);
+      return { leaders: [] };
+    }
+
 
     const leaders = [];
 
@@ -64,7 +72,7 @@ export class AthleteController {
     }
 
     // sort by kudos desc
-     const orderedLeaders = _.orderBy(leaders, ['kudos', 'desc']);
+    const orderedLeaders = _.orderBy(leaders, ['kudos', 'desc']);
 
     return { leaders: leaders };
   }

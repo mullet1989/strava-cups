@@ -108,7 +108,9 @@ export class AthleteService {
       .pipe(
         map(resp => resp.data),
         catchError(msg => {
-          console.log(msg); // log error and return empty response
+          for (let err of msg.data.errors) {
+            console.log(err); // log error and return empty response
+          }
           return of(new Array<Activity>());
         }),
         map<any[], Activity[]>((activities: any[]) => {
