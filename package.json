@@ -36,7 +36,8 @@
       "pg": "^7.6.1",
       "@nestjs/typeorm": "^5.2.2",
       "cookie-parser": "^1.4.3",
-      "nest-router": "^1.0.7"
+      "nest-router": "^1.0.7",
+      "express-sslify": "^1.2.0"
    },
    "devDependencies": {
       "@nestjs/testing": "^5.1.0",
