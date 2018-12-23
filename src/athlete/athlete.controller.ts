@@ -63,6 +63,7 @@ export class AthleteController {
           comments: comments.comment_count,
           others: others.athlete_count,
           speed: speed.average_speed,
+          number: activities.length
         });
 
       } catch (e) {

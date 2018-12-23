@@ -7,12 +7,13 @@
 <table id="leaders" class="responsive-table highlight">
     <thead>
     <tr>
-        <th onclick="sortTable(0)">name<i class="asc"></i></th>
+        <th>name</th>
         <th onclick="sortTable(1)">kudos<i class="down asc"></i></th>
         <th onclick="sortTable(2)">cups<i class="asc"></i></th>
         <th onclick="sortTable(3)">comments<i class="asc"></i></th>
         <th onclick="sortTable(4)">others<i class="asc"></i></th>
         <th onclick="sortTable(5)">speed<i class="asc"></i></th>
+        <th onclick="sortTable(6)">#runs<i class="asc"></i></th>
     </tr>
     </thead>
     <tbody>
@@ -23,7 +24,8 @@
             <td>{{cups}}</td>
             <td>{{comments}}</td>
             <td>{{others}}</td>
-            <td>{{speed}}</td>
+            <td>{{speed}}m/s</td>
+            <td>{{number}}</td>
         </tr>
     {{/each}}
     </tbody>
@@ -62,13 +64,13 @@
                 /* Check if the two rows should switch place,
                 based on the direction, asc or desc: */
                 if (dir == 'asc') {
-                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    if (parseInt(x.innerHTML.toLowerCase()) > parseInt(y.innerHTML.toLowerCase())) {
                         // If so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
                     }
                 } else if (dir == 'desc') {
-                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    if (parseInt(x.innerHTML.toLowerCase()) < parseInt(y.innerHTML.toLowerCase())) {
                         // If so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
