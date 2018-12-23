@@ -99,15 +99,12 @@ export class AthleteService {
       },
     };
 
-    let url = `${this.BaseUrl}/athlete/activities?page=${page}`;
+    let url = `${this.BaseUrl}/athlete/activities?page=${page}&per_page=${perPage}`;
     if (date) {
       // add date if it was passed optionally
       url += `&after=${Math.round(date.getTime() / 1000)}`;
     }
 
-    if (athlete.athlete_id == 1110558) {
-      console.log(url);
-    }
     let activities: any = await this._http.get<Activity[]>(url, config)
       .pipe(
         map(resp => resp.data),

@@ -75,9 +75,6 @@ export class AppService {
         try {
 
           let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime, pageSize);
-          if (athlete.athlete_id == 1110558) {
-            console.log(`FETCHED ${activities.length} for FINN, PAGE : ${page}, DATE : ${lastTime}, PAGESIZE : ${pageSize}`);
-          }
           if (activities.length) {
             // get everything and then filter runs here
             const runs = _.filter(activities, { 'type': 'Run' });
