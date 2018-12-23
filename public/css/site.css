@@ -15,6 +15,10 @@
     align-items: center;
 }
 
+input[type=submit] {
+    color: white;
+}
+
 .kudos-thumb {
     animation: newKudo 1s ease;
     animation-iteration-count: infinite;

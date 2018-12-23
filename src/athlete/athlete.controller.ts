@@ -24,10 +24,46 @@ export class AthleteController {
     }
   }
 
-  @Get('compare')
-  @Render('compare')
-  async compare(@Req() req, @Res() res) {
-    return { athlete: new Athlete() };
+  @Get('leaders')
+  @Render('leaders')
+  async leaders(@Req() req, @Res() res) {
+    const athletes: Athlete[] = await this._athleteService.getAll();
+
+    const leaders = [];
+
+    for (let athlete of athletes) {
+      try {
+        const activities = await this._athleteService.getDbActivitiesAsync(athlete);
+
+        // kudos
+        const kudos: Activity = _.maxBy(activities, 'kudos_count');
+        // cups
+        const cups: Activity = _.maxBy(activities, 'achievement_count');
+        // comments
+        const comments: Activity = _.maxBy(activities, 'comment_count');
+        // athletes
+        const others: Activity = _.maxBy(activities, 'athlete_count');
+        // speed
+        const speed: Activity = _.maxBy(activities, 'average_speed');
+
+        leaders.push({
+          athlete_id: athlete.id,
+          first_name: athlete.first_name,
+          last_name: athlete.last_name,
+          kudos: kudos.kudos_count,
+          cups: cups.achievement_count,
+          comments: comments.comment_count,
+          others: others.athlete_count,
+          speed: speed.average_speed,
+        });
+
+      } catch (e) {
+        return e.message;
+      }
+
+      return { leaders: leaders };
+
+    }
   }
 
   @Get('best')
