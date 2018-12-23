@@ -24,7 +24,7 @@ export class RatesService {
     this.fifteenCalls = 0;
     this.dayCalls = 0;
 
-    this._interval = 1000 * 5; // 5 seconds
+    this._interval = 1000 * 30; // 30 seconds
   }
 
 

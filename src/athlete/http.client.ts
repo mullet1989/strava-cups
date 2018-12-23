@@ -19,42 +19,34 @@ export class HttpClient {
   }
 
   get<T = any>(url: string, config?: AxiosRequestConfig): Observable<AxiosResponse<T>> {
-    // todo : anything extra here that you want
-    // console.log(`API calls to : ${path}, ${this.requests[path]}`);
-    if (this._rates.fifteenCalls + 5 < RatesService.FifteenRate
-      || this._rates.dayCalls + 5 < RatesService.DayRate) {
 
-      return this._http.get(url, config)
-        .pipe(
-          tap(resp => {
-            const [fifteenMin, day] = resp.headers['x-ratelimit-usage'].split(',').map(Number);
-            this._rates.fifteenCalls = fifteenMin;
-            this._rates.dayCalls = day;
+    return this._http.get(url, config)
+      .pipe(
+        tap(resp => {
+          const [fifteenMin, day] = resp.headers['x-ratelimit-usage'].split(',').map(Number);
+          this._rates.fifteenCalls = fifteenMin;
+          this._rates.dayCalls = day;
 
-            // todo : adjust the interval according to the distance from the limit
-            const allowance = _.max([fifteenMin / RatesService.FifteenRate, fifteenMin / RatesService.DayRate]);
+          // todo : adjust the interval according to the distance from the limit
+          const allowance = _.max([fifteenMin / RatesService.FifteenRate, fifteenMin / RatesService.DayRate]);
 
-            if (allowance > 0.9) {
-              this._rates.interval = 1000 * 60 * 15; // set to 15 min timeout
-            } else if (allowance > 0.8) {
-              let int = this._rates.interval * 2;
-              int = _.min([int, 1000 * 60 * 15]); // never go above 15 mins
-              if (int !== this._rates.interval) {
-                this._rates.interval = int;
-              }
-            } else {
-              let int = this._rates.interval / 2; // less time between requests
-              int = _.max([int, 5000]); // never drop below this number
-              if (int !== this._rates.interval) {
-                this._rates.interval = int;
-              }
+          if (allowance > 0.9) {
+            this._rates.interval = 1000 * 60 * 15; // set to 15 min timeout
+          } else if (allowance > 0.8) {
+            let int = this._rates.interval * 2;
+            int = _.min([int, 1000 * 60 * 15]); // never go above 15 mins
+            if (int !== this._rates.interval) {
+              this._rates.interval = int;
             }
+          } else {
+            let int = this._rates.interval / 2; // less time between requests
+            int = _.max([int, 1000 * 30]); // never drop below this number
+            if (int !== this._rates.interval) {
+              this._rates.interval = int;
+            }
+          }
 
-          }));
-
-    } else {
-      throw new Error('need to slow down');
-    }
+        }));
   }
 
   delete<T = any>(url: string, config?: AxiosRequestConfig): Observable<AxiosResponse<T>> {

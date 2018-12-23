@@ -59,7 +59,6 @@ export class AppService {
   async getActivities() {
 
     let athletes: Athlete[] = await this.athleteService.getAll();
-    const athletesActivitiesFetched: number[] = [];
 
     for (let athlete of athletes) {
       let latestActivities: Activity[] = await this.athleteService.getDbActivitiesAsync(athlete, 1);
@@ -71,9 +70,8 @@ export class AppService {
 
       let page: number = 1;
       const pageSize: number = 100;
-      while (page < 5) {
+      while (page < 12) {
         try {
-
           let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime, pageSize);
           if (activities.length) {
             // get everything and then filter runs here
@@ -90,13 +88,10 @@ export class AppService {
             break;
           }
         } catch (e) {
-          // clearTimeout(this._timeout); // stop working
           console.log(e.message);
         }
       }
-      athletesActivitiesFetched.push(athlete.athlete_id);
     }
-    console.log(`FETCHED FOR : ${athletesActivitiesFetched.length} ATHLETES`);
     this.isWorking = false;
     // queue another one
     this._timeout = setTimeout(this.callback, this.rateService.interval);
