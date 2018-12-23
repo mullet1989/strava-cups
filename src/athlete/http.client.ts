@@ -35,9 +35,13 @@ export class HttpClient {
             const allowance = _.max([fifteenMin / RatesService.FifteenRate, fifteenMin / RatesService.DayRate]);
 
             if (allowance > 0.9) {
-              this._rates.interval *= 5;
-            } else if (allowance > 0.9) {
-              this._rates.interval *= 2;
+              this._rates.interval = 1000 * 60 * 15; // set to 15 min timeout
+            } else if (allowance > 0.8) {
+              let int = this._rates.interval * 2;
+              int = _.min([int, 1000 * 60 * 15]); // never go above 15 mins
+              if (int !== this._rates.interval) {
+                this._rates.interval = int;
+              }
             } else {
               let int = this._rates.interval / 2; // less time between requests
               int = _.max([int, 5000]); // never drop below this number
