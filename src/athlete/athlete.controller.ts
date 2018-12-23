@@ -63,7 +63,10 @@ export class AthleteController {
 
     }
 
-    return { leaders: leaders };
+    // sort by kudos desc
+    const orderedLeaders = _.maxBy(leaders, "kudos");
+
+    return { leaders: orderedLeaders };
   }
 
   @Get('best')
