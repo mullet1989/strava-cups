@@ -40,7 +40,7 @@ export class HttpClient {
               this._rates.interval *= 2;
             } else {
               let int = this._rates.interval / 2; // less time between requests
-              int = _.max([int, 1000]); // never drop below this number
+              int = _.max([int, 5000]); // never drop below this number
               if (int !== this._rates.interval) {
                 this._rates.interval = int;
               }

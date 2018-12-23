@@ -61,9 +61,9 @@ export class AthleteController {
         return e.message;
       }
 
-      return { leaders: leaders };
-
     }
+
+    return { leaders: leaders };
   }
 
   @Get('best')
