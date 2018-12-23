@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Athlete } from '../entity/athlete.entity';
 import { Repository } from 'typeorm';
@@ -11,6 +11,7 @@ import { StravaBody } from '../strava/strava.models';
 import { ConfigService } from '../config/config.service';
 import * as _ from 'lodash';
 import { HttpClient } from './http.client';
+import { getConnection } from 'typeorm';
 
 @Injectable()
 export class AthleteService {
@@ -46,7 +47,23 @@ export class AthleteService {
     // insert to the database
     for (let a of activities) {
       try {
-        await this.activityRepository.insert(a);
+        let dba = await this.activityRepository.findOne({ id: a.id });
+        if (dba) {
+          await getConnection()
+            .createQueryBuilder()
+            .update(Activity)
+            .set({
+              kudos_count: a.kudos_count,
+              comment_count: a.comment_count,
+              achievement_count: a.achievement_count,
+              average_speed: a.average_speed,
+              athlete_count: a.athlete_count,
+            })
+            .where('id = :id', { id: dba.id })
+            .execute();
+        } else {
+          await this.activityRepository.insert(a);
+        }
       } catch (e) {
         let error: Error = e;
         console.log(error.message);
@@ -63,7 +80,8 @@ export class AthleteService {
       .getMany();
   }
 
-  async getActivitiesAsync(athlete: Athlete, page: number = 1, date?: Date): Promise<Activity[]> {
+  async getActivitiesAsync(athlete: Athlete, page: number = 1, date?: Date, perPage: number = 30)
+    : Promise<Activity[]> {
 
     let latestToken: AthleteAccessToken = _.maxBy(athlete.access_tokens, 'create_datetime');
     if (latestToken.isExpired) {

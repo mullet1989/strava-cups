@@ -6,6 +6,7 @@ import { ConfigService } from './config/config.service';
 import { Activity } from './entity/activity.entity';
 import { AuthService } from './authentication/auth.service';
 import { RatesService } from './rates/rates.service';
+import * as moment from 'moment';
 
 @Injectable()
 export class AppService {
@@ -55,17 +56,28 @@ export class AppService {
   async getActivities() {
 
     let athletes: Athlete[] = await this.athleteService.getAll();
-    let complete: boolean = false;
 
     try {
       for (let athlete of athletes) {
-        let page: number = 1;
         let latestActivities: Activity[] = await this.athleteService.getDbActivitiesAsync(athlete, 1);
-        let lastTime = (latestActivities && latestActivities.length) ? latestActivities[0].start_date : new Date('1970-01-01');
-        while (!complete && page < 5) {
-          let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime);
+
+        let lastTime =
+          (latestActivities && latestActivities.length)
+            ? moment(latestActivities[0].start_date).add(-2, 'w').toDate() // 2 weeks back
+            : new Date('1970-01-01');
+
+        let page: number = 1;
+        const pageSize: number = 100;
+        while (page < 5) {
+          let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime, pageSize);
           if (activities.length) {
             await this.athleteService.saveActivitiesAsync(activities);
+
+            if (activities.length < pageSize) {
+              // got everything already
+              break;
+            }
+
             page += 1;
           } else {
             break;
