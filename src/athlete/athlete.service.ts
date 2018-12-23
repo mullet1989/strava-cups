@@ -107,10 +107,8 @@ export class AthleteService {
     let activities: any = await this._http.get<Activity[]>(url, config)
       .pipe(
         map(resp => resp.data),
-        catchError(msg => {
-          for (let err of msg.data.errors) {
-            console.log(err); // log error and return empty response
-          }
+        catchError(err => {
+          console.log(err.message);
           return of(new Array<Activity>());
         }),
         map<any[], Activity[]>((activities: any[]) => {

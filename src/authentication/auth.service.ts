@@ -26,17 +26,22 @@ export class AuthService {
   }
 
   async getAthleteAsync(anon: string): Promise<Athlete> {
-    let session = await this.sessionRepository.findOne({ anon: anon });
+    try {
+      let session = await this.sessionRepository.findOne({ anon: anon });
 
-    const now: Date = new Date();
-    if (session && session.expires_datetime > now) {
-      return session.athlete;
-      // session exists but is expired -> make new session
-    } else if (session && session.expires_datetime <= now) {
-      const accessToken = await this.athleteService.refreshTokenAsync(session.athlete);
-      await this.newSessionAsync(anon, accessToken.athlete, accessToken.expires_datetime);
-      return accessToken.athlete;
-    } else {
+      const now: Date = new Date();
+      if (session && session.expires_datetime > now) {
+        return session.athlete;
+        // session exists but is expired -> make new session
+      } else if (session && session.expires_datetime <= now) {
+        const accessToken = await this.athleteService.refreshTokenAsync(session.athlete);
+        await this.newSessionAsync(anon, accessToken.athlete, accessToken.expires_datetime);
+        return accessToken.athlete;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      console.log(e);
       return null;
     }
   }
