@@ -114,9 +114,6 @@ export class AthleteService {
         map<any[], Activity[]>((activities: any[]) => {
           let as = new Array<Activity>();
           for (let activity of activities) {
-            if (activity.type !== 'Run') {
-              continue;
-            }
             let a = new Activity();
             a.id = activity.id;
             a.athlete = new Athlete();

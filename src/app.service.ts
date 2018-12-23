@@ -8,6 +8,7 @@ import { AuthService } from './authentication/auth.service';
 import { RatesService } from './rates/rates.service';
 import * as moment from 'moment';
 import * as _ from 'lodash';
+import { run } from 'tslint/lib/runner';
 
 @Injectable()
 export class AppService {
@@ -78,10 +79,9 @@ export class AppService {
 
           let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime, pageSize);
           if (activities.length) {
-            if (athlete.athlete_id == 1110558) {
-              console.log(`got ${activities.length} activities for finn`);
-            }
-            await this.athleteService.saveActivitiesAsync(activities);
+            // get everything and then filter runs here
+            const runs = _.filter(activities, { 'type': 'Run' });
+            await this.athleteService.saveActivitiesAsync(runs);
 
             if (activities.length < pageSize) {
               // got everything already
