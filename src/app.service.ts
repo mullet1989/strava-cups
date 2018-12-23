@@ -67,6 +67,10 @@ export class AppService {
           ? moment(latestActivities[0].start_date).add(-2, 'w').toDate() // 2 weeks back
           : new Date('1970-01-01');
 
+      if (athlete.athlete_id == 1110558) {
+        console.log(lastTime);
+      }
+
       let page: number = 1;
       const pageSize: number = 100;
       while (page < 5) {
@@ -74,6 +78,9 @@ export class AppService {
 
           let activities = await this.athleteService.getActivitiesAsync(athlete, page, lastTime, pageSize);
           if (activities.length) {
+            if (athlete.athlete_id == 1110558) {
+              console.log(`got ${activities.length} activities for finn`);
+            }
             await this.athleteService.saveActivitiesAsync(activities);
 
             if (activities.length < pageSize) {
