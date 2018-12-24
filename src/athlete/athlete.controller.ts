@@ -68,7 +68,7 @@ export class AthleteController {
           others: others,
           speed: speed,
           distance: distance,
-          number: activities.length
+          number: activities.length,
         });
 
       } catch (e) {
@@ -78,7 +78,7 @@ export class AthleteController {
     }
 
     // sort by kudos desc
-    const orderedLeaders = _.orderBy(leaders, ['kudos.kudos_count', 'desc']);
+    const orderedLeaders = _.orderBy(leaders, (e) => e.kudos.kudos_count, 'desc');
 
     return { leaders: orderedLeaders, overall: orderedLeaders[0] };
   }
