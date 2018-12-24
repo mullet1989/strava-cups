@@ -12,18 +12,22 @@
         <th onclick="sortTable(3)">comments<i class="asc"></i></th>
         <th onclick="sortTable(4)">others<i class="asc"></i></th>
         <th onclick="sortTable(5)">speed<i class="asc"></i></th>
-        <th onclick="sortTable(6)">#runs<i class="asc"></i></th>
+        <th onclick="sortTable(6)">longest<i class="asc"></i></th>
+        <th onclick="sortTable(7)">#runs<i class="asc"></i></th>
+
     </tr>
     </thead>
     <tbody>
     {{#each leaders}}
         <tr>
-            <td>{{first_name}} {{last_name}}</td>
-            <td title="{{kudos.name}}">{{kudos.kudos_count}}</td>
-            <td title="{{cups.name}}">{{cups.achievement_count}}</td>
-            <td title="{{comments.name}}">{{comments.comment_count}}</td>
-            <td title="{{others.name}}">{{others.athlete_count}}</td>
-            <td title="{{speed.name}}">{{speed.average_speed}}m/s</td>
+            <td><a href="https://strava.com/athletes/{{athlete_id}}">{{first_name}} {{last_name}}</a></td>
+            <td title="{{kudos.name}}">{{#if kudos.kudos_count}}{{kudos.kudos_count}}{{else}}0{{/if}}</td>
+            <td title="{{cups.name}}">{{#if cups.achievement_count}}{{cups.achievement_count}}{{else}}0{{/if}}</td>
+            <td title="{{comments.name}}">{{#if comments.comment_count}}{{comments.comment_count}}{{else}}0{{/if}}</td>
+            <td title="{{others.name}}">{{#if others.athlete_count}}{{others.athlete_count}}{{else}}0{{/if}}</td>
+            <td title="{{speed.name}}">{{#if speed.average_speed}}{{speed.average_speed}}m/s{{else}}0m/s{{/if}}</td>
+            <td title="{{distance.name}}">{{#if distance.distance}}{{format_distance distance.distance}}kms{{else}}
+                0kms{{/if}}</td>
             <td>{{number}}</td>
         </tr>
     {{/each}}

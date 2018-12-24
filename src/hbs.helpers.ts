@@ -9,6 +9,6 @@ export const registerHelpers = () => {
   });
 
   hbs.registerHelper('format_distance', (distance: number): string => {
-    return Math.round(distance / 1000) + " kms";
+    return (Math.round(distance / 10) / 100).toString();
   });
 };

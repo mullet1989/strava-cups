@@ -53,9 +53,11 @@ export class AthleteController {
         const others: Activity = _.maxBy(activities, 'athlete_count') || new Activity();
         // speed
         const speed: Activity = _.maxBy(activities, 'average_speed') || new Activity();
+        // distance
+        const distance: Activity = _.maxBy(activities, 'distance') || new Activity();
 
         leaders.push({
-          athlete_id: athlete.id,
+          athlete_id: athlete.athlete_id,
           first_name: athlete.first_name,
           last_name: athlete.last_name,
           kudos: kudos,
@@ -63,6 +65,7 @@ export class AthleteController {
           comments: comments,
           others: others,
           speed: speed,
+          distance: distance,
           number: activities.length
         });
 

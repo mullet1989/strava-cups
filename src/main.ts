@@ -18,7 +18,9 @@ async function bootstrap() {
   app.setViewEngine('hbs');
   app.use(cookie('secretstring'));
 
-  app.use(enforce.HTTPS({ trustProtoHeader: true }));
+  if (process.env.NODE_ENV === 'production') {
+    app.use(enforce.HTTPS({ trustProtoHeader: true }));
+  }
 
 
   await app.listen(process.env.PORT || 3000);
