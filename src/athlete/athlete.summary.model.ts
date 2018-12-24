@@ -4,3 +4,9 @@ export class AthleteSummaryModel {
   name: string;
   id: number;
 }
+
+export class MetricResult {
+  val: number;
+  name: string;
+  id: number;
+}

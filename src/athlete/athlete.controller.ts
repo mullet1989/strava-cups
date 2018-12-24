@@ -3,7 +3,7 @@ import { AthleteService } from './athlete.service';
 import { Athlete } from '../entity/athlete.entity';
 import * as _ from 'lodash';
 import { Activity } from '../entity/activity.entity';
-import { AthleteSummaryModel } from './athlete.summary.model';
+import { AthleteSummaryModel, MetricResult } from './athlete.summary.model';
 
 
 @Controller()
@@ -106,7 +106,7 @@ export class AthleteController {
     }
 
     // sort by kudos desc
-    const orderedLeaders = _.orderBy(leaders, (e) => e.kudos.val, 'desc');
+    const orderedLeaders = _.orderBy(leaders, (e) => e.kudos ? e.kudos.val : 0, 'desc');
 
     return { leaders: orderedLeaders, overall: orderedLeaders[0] };
   }
