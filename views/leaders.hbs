@@ -24,12 +24,12 @@
     {{#each leaders}}
         <tr>
             <td><a href="https://strava.com/athletes/{{athlete_id}}">{{first_name}} {{last_name}}</a></td>
-            <td title="{{kudos.name}}">{{#if kudos.kudos_count}}{{kudos.kudos_count}}{{else}}0{{/if}}</td>
-            <td title="{{cups.name}}">{{#if cups.achievement_count}}{{cups.achievement_count}}{{else}}0{{/if}}</td>
-            <td title="{{comments.name}}">{{#if comments.comment_count}}{{comments.comment_count}}{{else}}0{{/if}}</td>
-            <td title="{{others.name}}">{{#if others.athlete_count}}{{others.athlete_count}}{{else}}0{{/if}}</td>
-            <td title="{{speed.name}}">{{#if speed.average_speed}}{{speed.average_speed}}m/s{{else}}0m/s{{/if}}</td>
-            <td title="{{distance.name}}">{{#if distance.distance}}{{format_distance distance.distance}}kms{{else}}
+            <td title="<a href='https://strava.com/activities/{{kudos.id}}' target='_blank'>{{kudos.name}}</a>">{{#if kudos.kudos_count}}{{kudos.kudos_count}}{{else}}0{{/if}}</td>
+            <td title="<a href='https://strava.com/activities/{{cups.id}}' target='_blank'>{{cups.name}}</a>">{{#if cups.achievement_count}}{{cups.achievement_count}}{{else}}0{{/if}}</td>
+            <td title="<a href='https://strava.com/activities/{{comments.id}}' target='_blank'>{{comments.name}}</a>">{{#if comments.comment_count}}{{comments.comment_count}}{{else}}0{{/if}}</td>
+            <td title="<a href='https://strava.com/activities/{{others.id}}' target='_blank'>{{others.name}}</a>">{{#if others.athlete_count}}{{others.athlete_count}}{{else}}0{{/if}}</td>
+            <td title="<a href='https://strava.com/activities/{{speed.id}}' target='_blank'>{{speed.name}}</a>">{{#if speed.average_speed}}{{speed.average_speed}}m/s{{else}}0m/s{{/if}}</td>
+            <td title="<a href='https://strava.com/activities/{{distance.id}}' target='_blank'>{{distance.name}}</a>">{{#if distance.distance}}{{format_distance distance.distance}}kms{{else}}
                 0kms{{/if}}</td>
             <td>{{number}}</td>
         </tr>
@@ -123,7 +123,7 @@
     for (var i = 0; i < records.length; i++) {
         new Tooltip(records[i], {
             placement: 'bottom', // or bottom, left, right, and variations
-            textContent: 'aajsoidasd9',
+            html: true
         });
     }
 
