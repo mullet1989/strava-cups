@@ -12,6 +12,7 @@ import { ConfigService } from '../config/config.service';
 import * as _ from 'lodash';
 import { HttpClient } from './http.client';
 import { getConnection, getManager } from 'typeorm';
+import { AthleteSummaryModel } from './athlete.summary.model';
 
 @Injectable()
 export class AthleteService {
@@ -175,21 +176,51 @@ export class AthleteService {
     return accessToken;
   }
 
-  async getTopMetricForAthletes(field: string): Promise<{ athlete_id: number, kudos_count: number }[]> {
+  async getTopMetricForAthletes(field: string): Promise<any> {
     const manager = getManager();
-    const results: { athlete_id: number, kudos_count: number }[] = await manager.query(`select a.athlete_id, a.${field}
-                                                                                      from (
-                                                                                             select a2.athlete_id as athlete_id,
-                                                                                                    ${field}   as ${field},
-                                                                                                    ROW_NUMBER()     over
-                                                                                                    (partition by a.athlete_id order by ${field} desc) as row_num
-                                                                                             from activity a
-                                                                                                    join athlete a2 on a.athlete_id = a2.id
-                                                                                             ) as a
-                                                                                      where a.row_num = 1
-                                                                                      order by a.${field} desc`);
+    const results: AthleteSummaryModel[] = await manager.query(`select a.athlete_id,
+                                                                       a.name,
+                                                                       a.val
+                                                                from
+                                                                  (
+                                                                    select a2.athlete_id as athlete_id,
+                                                                           ${field}   as "val",
+                                                                           a.name,
+                                                                           ROW_NUMBER()     over
+                                                                           (
+                                                                             partition by a.athlete_id
+                                                                               order by ${field} desc
+                                                                             ) as row_num
+                                                                    from activity a
+                                                                           join athlete a2 on a.athlete_id = a2.id
+                                                                    ) as a
+                                                                where a.row_num = 1
+                                                                order by a.val desc
+    `);
 
-    return results;
+    return results.reduce((map, obj) => {
+      map[obj.athlete_id] = {
+        val: obj.val,
+        name: obj.name,
+        id: obj.id,
+      };
+      return map;
+    }, {});
+  }
+
+  async getAthleteTotalRuns(): Promise<any> {
+    const manager = getManager();
+    const results: AthleteSummaryModel[] = await manager.query(`select a2.athlete_id,
+                                                                       count(1) as "val"
+                                                                from activity a
+                                                                       join athlete a2 on a.athlete_id = a2.id
+                                                                group by a2.athlete_id, first_name, last_name
+                                                                order by count(1) desc`);
+
+    return results.reduce((map, obj) => {
+      map[obj.athlete_id] = obj.val;
+      return map;
+    }, {});
   }
 
 }

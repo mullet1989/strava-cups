@@ -3,6 +3,7 @@ import { AthleteService } from './athlete.service';
 import { Athlete } from '../entity/athlete.entity';
 import * as _ from 'lodash';
 import { Activity } from '../entity/activity.entity';
+import { AthleteSummaryModel } from './athlete.summary.model';
 
 
 @Controller()
@@ -40,18 +41,33 @@ export class AthleteController {
     const leaders = [];
 
     // this is experimental
-    try {
-      const kudos: { athlete_id: number, kudos_count: number }[] = await this._athleteService.getTopMetricForAthletes('kudos_count');
-      for (let k of kudos) {
-        console.log(`athlete : ${k.athlete_id}, kudos : ${k.kudos_count}`);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    const kudos = await this._athleteService.getTopMetricForAthletes('kudos_count');
+    const cups = await this._athleteService.getTopMetricForAthletes('achievement_count');
+    const comments = await this._athleteService.getTopMetricForAthletes('comment_count');
+    const others = await this._athleteService.getTopMetricForAthletes('athlete_count');
+    const speed = await this._athleteService.getTopMetricForAthletes('average_speed');
+    const distance = await this._athleteService.getTopMetricForAthletes('distance');
+
+    // num_runs
+    const runs: AthleteSummaryModel[] = await this._athleteService.getAthleteTotalRuns();
 
     for (let athlete of athletes) {
       try {
 
+        leaders.push({
+          athlete_id: athlete.athlete_id,
+          first_name: athlete.first_name,
+          last_name: athlete.last_name,
+          kudos: kudos[athlete.athlete_id],
+          cups: cups[athlete.athlete_id],
+          comments: comments[athlete.athlete_id],
+          others: others[athlete.athlete_id],
+          speed: speed[athlete.athlete_id],
+          distance: distance[athlete.athlete_id],
+          number: runs[athlete.athlete_id],
+        });
+
+        /*
         // todo : must make this more efficient as more people join
         const activities = await this._athleteService.getDbActivitiesAsync(athlete);
 
@@ -81,6 +97,7 @@ export class AthleteController {
           distance: distance,
           number: activities.length,
         });
+        */
 
       } catch (e) {
         return e.message;
