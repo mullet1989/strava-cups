@@ -7,7 +7,10 @@
     <thead>
     <tr>
         <th>name<i class="down hide asc"></i></th>
-        <th onclick="sortTable(1)">kudos<i class="down desc"></i></th>
+        <th onclick="sortTable(1)">
+            <div class="valign-wrapper">
+            <div class="kudos-thumb" style="margin-right: 5px;">kudos</div>kudos<i class="down desc"></i></th>
+        </div>
         <th onclick="sortTable(2)">cups<i class="asc"></i></th>
         <th onclick="sortTable(3)">comments<i class="asc"></i></th>
         <th onclick="sortTable(4)">others<i class="asc"></i></th>
@@ -67,13 +70,13 @@
                 /* Check if the two rows should switch place,
                 based on the direction, asc or desc: */
                 if (dir == 'asc') {
-                    if (parseFloat(x.innerHTML.toLowerCase()) > parseFloat(y.innerHTML.toLowerCase())) {
+                    if (parseFloat(x.innerHTML.toLowerCase()) < parseFloat(y.innerHTML.toLowerCase())) {
                         // If so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
                     }
                 } else if (dir == 'desc') {
-                    if (parseFloat(x.innerHTML.toLowerCase()) < parseFloat(y.innerHTML.toLowerCase())) {
+                    if (parseFloat(x.innerHTML.toLowerCase()) > parseFloat(y.innerHTML.toLowerCase())) {
                         // If so, mark as a switch and break the loop:
                         shouldSwitch = true;
                         break;
