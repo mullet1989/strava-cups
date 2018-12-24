@@ -39,6 +39,16 @@ export class AthleteController {
 
     const leaders = [];
 
+    // this is experimental
+    try {
+      const kudos: { athlete_id: number, kudos_count: number }[] = await this._athleteService.getTopMetricForAthletes('kudos_count');
+      for (let k of kudos) {
+        console.log(`athlete : ${k.athlete_id}, kudos : ${k.kudos_count}`);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
     for (let athlete of athletes) {
       try {
 
@@ -47,6 +57,7 @@ export class AthleteController {
 
         // kudos
         const kudos: Activity = _.maxBy(activities, 'kudos_count') || new Activity();
+
         // cups
         const cups: Activity = _.maxBy(activities, 'achievement_count') || new Activity();
         // comments

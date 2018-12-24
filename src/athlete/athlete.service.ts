@@ -11,7 +11,7 @@ import { StravaBody } from '../strava/strava.models';
 import { ConfigService } from '../config/config.service';
 import * as _ from 'lodash';
 import { HttpClient } from './http.client';
-import { getConnection } from 'typeorm';
+import { getConnection, getManager } from 'typeorm';
 
 @Injectable()
 export class AthleteService {
@@ -173,6 +173,23 @@ export class AthleteService {
     await this.accessTokenRepository.insert(accessToken);
 
     return accessToken;
+  }
+
+  async getTopMetricForAthletes(field: string): Promise<{ athlete_id: number, kudos_count: number }[]> {
+    const manager = getManager();
+    const results: { athlete_id: number, kudos_count: number }[] = await manager.query(`select a.athlete_id, a.${field}
+                                                                                      from (
+                                                                                             select a2.athlete_id as athlete_id,
+                                                                                                    ${field}   as ${field},
+                                                                                                    ROW_NUMBER()     over
+                                                                                                    (partition by a.athlete_id order by ${field} desc) as row_num
+                                                                                             from activity a
+                                                                                                    join athlete a2 on a.athlete_id = a2.id
+                                                                                             ) as a
+                                                                                      where a.row_num = 1
+                                                                                      order by a.${field} desc`);
+
+    return results;
   }
 
 }
