@@ -7,7 +7,7 @@
     <thead>
     <tr>
         <th>name<i class="down hide asc"></i></th>
-        <th onclick="sortTable(1)">kudos<i class="down asc"></i></th>
+        <th onclick="sortTable(1)">kudos<i class="down desc"></i></th>
         <th onclick="sortTable(2)">cups<i class="asc"></i></th>
         <th onclick="sortTable(3)">comments<i class="asc"></i></th>
         <th onclick="sortTable(4)">others<i class="asc"></i></th>
@@ -41,7 +41,7 @@
         table = document.getElementById('leaders');
         switching = true;
         // Set the sorting direction to ascending:
-        dir = 'asc';
+        dir = 'desc';
         /* Make a loop that will continue until
         no switching has been done: */
 
@@ -96,7 +96,7 @@
                 }
             }
         }
-        if (dir === 'desc') {
+        if (dir === 'asc') {
             table.rows[0].children[n].getElementsByTagName('i')[0].classList.remove('down');
             table.rows[0].children[n].getElementsByTagName('i')[0].classList.add('up');
         } else {
@@ -104,6 +104,9 @@
             table.rows[0].children[n].getElementsByTagName('i')[0].classList.add('down');
         }
     }
+
+    // sort by kudos on load
+    sortTable(1);
 </script>
 
 
