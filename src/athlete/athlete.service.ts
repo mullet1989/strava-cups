@@ -180,12 +180,14 @@ export class AthleteService {
     const manager = getManager();
     const results: AthleteSummaryModel[] = await manager.query(`select a.athlete_id,
                                                                        a.name,
+                                                                       a.id,
                                                                        a.val
                                                                 from
                                                                   (
                                                                     select a2.athlete_id as athlete_id,
                                                                            ${field}   as "val",
-                                                                           a.name,
+                                                                           a.name as name,
+                                                                           a.id as id,
                                                                            ROW_NUMBER()     over
                                                                            (
                                                                              partition by a.athlete_id
