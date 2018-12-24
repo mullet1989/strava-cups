@@ -41,6 +41,8 @@ export class AthleteController {
 
     for (let athlete of athletes) {
       try {
+
+        // todo : must make this more efficient as more people join
         const activities = await this._athleteService.getDbActivitiesAsync(athlete);
 
         // kudos
@@ -76,7 +78,7 @@ export class AthleteController {
     }
 
     // sort by kudos desc
-    const orderedLeaders = _.orderBy(leaders, ['kudos.kudos_count', 'desc']);
+    const orderedLeaders = _.orderBy(leaders, ['kudos.kudos_count', 'asc']);
 
     return { leaders: orderedLeaders };
   }
